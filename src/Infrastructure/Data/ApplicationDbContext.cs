@@ -15,6 +15,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
 
+    public DbSet<Author> Authors => Set<Author>();
+
+    public DbSet<Book> Books => Set<Book>();
+
+    public DbSet<BookCopy> BookCopies => Set<BookCopy>();
+
+    public DbSet<Member> Members => Set<Member>();
+
+    public DbSet<Loan> Loans => Set<Loan>();
+
+    public DbSet<Reservation> Reservations => Set<Reservation>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
