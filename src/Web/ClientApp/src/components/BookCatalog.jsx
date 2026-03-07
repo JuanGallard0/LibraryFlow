@@ -19,7 +19,7 @@ export function BookCatalog() {
     setLoading(true);
     setError("");
     client
-      .getBooksWithPagination(query || undefined, undefined, page, PAGE_SIZE)
+      .getBooksWithPagination(query || undefined, page, PAGE_SIZE)
       .then((data) => {
         setBooks(data.items);
         setTotalPages(data.totalPages ?? 1);

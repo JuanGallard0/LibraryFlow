@@ -307,6 +307,7 @@ namespace LibraryFlow.Infrastructure.Migrations
                     Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     BookId = table.Column<int>(type: "int", nullable: false),
                     MemberId = table.Column<int>(type: "int", nullable: false),
+                    BookCopyId = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
@@ -315,6 +316,12 @@ namespace LibraryFlow.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reservations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reservations_BookCopies_BookCopyId",
+                        column: x => x.BookCopyId,
+                        principalTable: "BookCopies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Reservations_Books_BookId",
                         column: x => x.BookId,
@@ -454,6 +461,11 @@ namespace LibraryFlow.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Reservations_BookCopyId",
+                table: "Reservations",
+                column: "BookCopyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Reservations_BookId",
                 table: "Reservations",
                 column: "BookId");
@@ -500,19 +512,19 @@ namespace LibraryFlow.Infrastructure.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "BookCopies");
-
-            migrationBuilder.DropTable(
                 name: "Reservations");
 
             migrationBuilder.DropTable(
                 name: "TodoLists");
 
             migrationBuilder.DropTable(
-                name: "Books");
+                name: "BookCopies");
 
             migrationBuilder.DropTable(
                 name: "Members");
+
+            migrationBuilder.DropTable(
+                name: "Books");
 
             migrationBuilder.DropTable(
                 name: "Authors");

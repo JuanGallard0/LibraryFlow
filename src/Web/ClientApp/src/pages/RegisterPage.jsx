@@ -3,6 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../components/api-authorization/AuthContext";
 
 export function RegisterPage() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -13,7 +15,7 @@ export function RegisterPage() {
     e.preventDefault();
     setError("");
     try {
-      await register(email, password);
+      await register(firstName, lastName, email, password);
       navigate("/login");
     } catch {
       setError("Registration failed. Please try again.");
@@ -30,6 +32,38 @@ export function RegisterPage() {
           </div>
         )}
         <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label
+              htmlFor="firstName"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              First Name
+            </label>
+            <input
+              type="text"
+              id="firstName"
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="lastName"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Last Name
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+            />
+          </div>
           <div className="mb-4">
             <label
               htmlFor="email"

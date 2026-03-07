@@ -12,6 +12,9 @@ public class Reservation : BaseAuditableEntity
     public int MemberId { get; set; }
     public Member Member { get; set; } = null!;
 
+    public int BookCopyId { get; set; }
+    public BookCopy BookCopy { get; set; } = null!;
+
     public void Expire()
     {
         Status = ReservationStatus.Expired;

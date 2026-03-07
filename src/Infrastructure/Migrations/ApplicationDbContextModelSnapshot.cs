@@ -276,6 +276,9 @@ namespace LibraryFlow.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BookCopyId")
+                        .HasColumnType("int");
+
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
@@ -306,6 +309,8 @@ namespace LibraryFlow.Infrastructure.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BookCopyId");
 
                     b.HasIndex("BookId");
 
@@ -639,6 +644,12 @@ namespace LibraryFlow.Infrastructure.Migrations
 
             modelBuilder.Entity("LibraryFlow.Domain.Entities.Reservation", b =>
                 {
+                    b.HasOne("LibraryFlow.Domain.Entities.BookCopy", "BookCopy")
+                        .WithMany()
+                        .HasForeignKey("BookCopyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("LibraryFlow.Domain.Entities.Book", "Book")
                         .WithMany("Reservations")
                         .HasForeignKey("BookId")
@@ -652,6 +663,8 @@ namespace LibraryFlow.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Book");
+
+                    b.Navigation("BookCopy");
 
                     b.Navigation("Member");
                 });

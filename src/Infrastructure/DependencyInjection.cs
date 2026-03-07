@@ -3,6 +3,7 @@ using LibraryFlow.Domain.Constants;
 using LibraryFlow.Infrastructure.Data;
 using LibraryFlow.Infrastructure.Data.Interceptors;
 using LibraryFlow.Infrastructure.Identity;
+using LibraryFlow.Infrastructure.Reservations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -52,6 +53,7 @@ public static class DependencyInjection
 
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
+        builder.Services.AddScoped<IReservationService, ReservationService>();
 
         builder.Services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));

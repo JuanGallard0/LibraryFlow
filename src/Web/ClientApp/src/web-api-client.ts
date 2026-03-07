@@ -20,21 +20,16 @@ export class BooksClient {
     /**
      * Get books with pagination
      * @param search (optional) 
-     * @param genre (optional) 
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
      * @return OK
      */
-    getBooksWithPagination(search: string | undefined, genre: string | undefined, pageNumber: number | undefined, pageSize: number | undefined): Promise<PaginatedListOfBookDto> {
+    getBooksWithPagination(search: string | undefined, pageNumber: number | undefined, pageSize: number | undefined): Promise<PaginatedListOfBookDto> {
         let url_ = this.baseUrl + "/api/Books?";
         if (search === null)
             throw new globalThis.Error("The parameter 'search' cannot be null.");
         else if (search !== undefined)
             url_ += "Search=" + encodeURIComponent("" + search) + "&";
-        if (genre === null)
-            throw new globalThis.Error("The parameter 'genre' cannot be null.");
-        else if (genre !== undefined)
-            url_ += "Genre=" + encodeURIComponent("" + genre) + "&";
         if (pageNumber === null)
             throw new globalThis.Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -140,6 +135,244 @@ export class BooksClient {
             });
         }
         return Promise.resolve<number>(null as any);
+    }
+}
+
+export class MembersClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * Register a new member
+     * @return Created
+     */
+    registerMember(body: RegisterMemberCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Members/register";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRegisterMember(_response);
+        });
+    }
+
+    protected processRegisterMember(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result201 = resultData201 !== undefined ? resultData201 : null as any;
+    
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(null as any);
+    }
+}
+
+export class ReservationsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * Get my reservations
+     * @return OK
+     */
+    getUserReservations(): Promise<ReservationDto[]> {
+        let url_ = this.baseUrl + "/api/Reservations";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUserReservations(_response);
+        });
+    }
+
+    protected processGetUserReservations(response: Response): Promise<ReservationDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ReservationDto.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ReservationDto[]>(null as any);
+    }
+
+    /**
+     * Reserve a book
+     * @return Created
+     */
+    reserveBook(body: ReserveBookCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Reservations";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processReserveBook(_response);
+        });
+    }
+
+    protected processReserveBook(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result201 = resultData201 !== undefined ? resultData201 : null as any;
+    
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(null as any);
+    }
+
+    /**
+     * Get all reservations
+     * @return OK
+     */
+    getAllReservations(): Promise<ReservationDto[]> {
+        let url_ = this.baseUrl + "/api/Reservations/all";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAllReservations(_response);
+        });
+    }
+
+    protected processGetAllReservations(response: Response): Promise<ReservationDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ReservationDto.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ReservationDto[]>(null as any);
     }
 }
 
@@ -2136,6 +2369,66 @@ export interface IRefreshRequest {
     [key: string]: any;
 }
 
+export class RegisterMemberCommand implements IRegisterMemberCommand {
+    firstName!: string;
+    lastName!: string;
+    email!: string;
+    password!: string;
+
+    [key: string]: any;
+
+    constructor(data?: IRegisterMemberCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.email = _data["email"];
+            this.password = _data["password"];
+        }
+    }
+
+    static fromJS(data: any): RegisterMemberCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterMemberCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["email"] = this.email;
+        data["password"] = this.password;
+        return data;
+    }
+}
+
+export interface IRegisterMemberCommand {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+
+    [key: string]: any;
+}
+
 export class RegisterRequest implements IRegisterRequest {
     email!: string;
     password!: string;
@@ -2232,6 +2525,126 @@ export class ResendConfirmationEmailRequest implements IResendConfirmationEmailR
 
 export interface IResendConfirmationEmailRequest {
     email: string;
+
+    [key: string]: any;
+}
+
+export class ReservationDto implements IReservationDto {
+    id?: number;
+    bookId?: number;
+    bookTitle?: string;
+    bookISBN?: string;
+    reservedAt?: Date;
+    expiresAt?: Date;
+    status?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IReservationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.bookId = _data["bookId"];
+            this.bookTitle = _data["bookTitle"];
+            this.bookISBN = _data["bookISBN"];
+            this.reservedAt = _data["reservedAt"] ? new Date(_data["reservedAt"].toString()) : undefined as any;
+            this.expiresAt = _data["expiresAt"] ? new Date(_data["expiresAt"].toString()) : undefined as any;
+            this.status = _data["status"];
+        }
+    }
+
+    static fromJS(data: any): ReservationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ReservationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["bookId"] = this.bookId;
+        data["bookTitle"] = this.bookTitle;
+        data["bookISBN"] = this.bookISBN;
+        data["reservedAt"] = this.reservedAt ? this.reservedAt.toISOString() : undefined as any;
+        data["expiresAt"] = this.expiresAt ? this.expiresAt.toISOString() : undefined as any;
+        data["status"] = this.status;
+        return data;
+    }
+}
+
+export interface IReservationDto {
+    id?: number;
+    bookId?: number;
+    bookTitle?: string;
+    bookISBN?: string;
+    reservedAt?: Date;
+    expiresAt?: Date;
+    status?: number;
+
+    [key: string]: any;
+}
+
+export class ReserveBookCommand implements IReserveBookCommand {
+    bookId!: number;
+
+    [key: string]: any;
+
+    constructor(data?: IReserveBookCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.bookId = _data["bookId"];
+        }
+    }
+
+    static fromJS(data: any): ReserveBookCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ReserveBookCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["bookId"] = this.bookId;
+        return data;
+    }
+}
+
+export interface IReserveBookCommand {
+    bookId: number;
 
     [key: string]: any;
 }

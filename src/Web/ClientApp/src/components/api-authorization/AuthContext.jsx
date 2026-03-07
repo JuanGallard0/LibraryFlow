@@ -1,30 +1,31 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { UsersClient, LoginRequest, RegisterRequest } from '../../web-api-client';
+import { UsersClient, LoginRequest, MembersClient, RegisterMemberCommand } from '../../web-api-client';
 
 const AuthContext = createContext(null);
 
-const client = new UsersClient();
+const usersClient = new UsersClient();
+const membersClient = new MembersClient();
 
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    client.infoGET()
+    usersClient.infoGET()
       .then(() => setIsAuthenticated(true))
       .catch(() => setIsAuthenticated(false))
       .finally(() => setIsLoading(false));
   }, []);
 
   const login = (email, password) =>
-    client.login(true, undefined, new LoginRequest({ email, password }))
+    usersClient.login(true, undefined, new LoginRequest({ email, password }))
       .then(() => setIsAuthenticated(true));
 
-  const register = (email, password) =>
-    client.register(new RegisterRequest({ email, password }));
+  const register = (firstName, lastName, email, password) =>
+    membersClient.registerMember(new RegisterMemberCommand({ firstName, lastName, email, password }));
 
   const logout = () =>
-    client.logout({})
+    usersClient.logout({})
       .then(() => setIsAuthenticated(false));
 
   return (
