@@ -1,20 +1,24 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ReservationsClient, ReserveBookCommand } from "../web-api-client.ts";
+import { BookDto, ReservationsClient, ReserveBookCommand } from "../web-api-client.ts";
 
 const client = new ReservationsClient();
 
-export function BookDetail({ book }) {
+interface BookDetailProps {
+  book: BookDto;
+}
+
+export function BookDetail({ book }: BookDetailProps) {
   const navigate = useNavigate();
   const [reserving, setReserving] = useState(false);
   const [error, setError] = useState("");
-  const available = book.availableCopies > 0;
+  const available = (book.availableCopies ?? 0) > 0;
 
   const handleReserve = async () => {
     setReserving(true);
     setError("");
     try {
-      await client.reserveBook(new ReserveBookCommand({ bookId: book.id }));
+      await client.reserveBook(new ReserveBookCommand({ bookId: book.id ?? 0 }));
       navigate("/reservations");
     } catch {
       setError("Failed to reserve the book. Please try again.");

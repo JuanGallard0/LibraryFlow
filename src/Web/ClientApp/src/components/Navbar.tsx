@@ -85,23 +85,15 @@ export function Navbar() {
               className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
               to="/"
             >
-              Home
+              Books
             </Link>
           </li>
           <li>
             <Link
               className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
-              to="/counter"
+              to="/reservations"
             >
-              Counter
-            </Link>
-          </li>
-          <li>
-            <Link
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
-              to="/fetch-data"
-            >
-              Fetch data
+              My Reservations
             </Link>
           </li>
           <NavBarInner />

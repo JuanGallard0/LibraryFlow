@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
-import { ReservationsClient } from "../web-api-client.ts";
+import { ReservationsClient, ReservationDto } from "../web-api-client.ts";
 
 const client = new ReservationsClient();
 
-const STATUS_LABELS = {
+interface StatusLabel {
+  label: string;
+  className: string;
+}
+
+const STATUS_LABELS: Record<number, StatusLabel> = {
   1: { label: "Pending", className: "text-yellow-600" },
   2: { label: "Fulfilled", className: "text-green-600" },
   3: { label: "Cancelled", className: "text-red-500" },
@@ -11,7 +16,7 @@ const STATUS_LABELS = {
 };
 
 export function ReservationList() {
-  const [reservations, setReservations] = useState([]);
+  const [reservations, setReservations] = useState<ReservationDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -51,7 +56,7 @@ export function ReservationList() {
       </thead>
       <tbody>
         {reservations.map((r, i) => {
-          const status = STATUS_LABELS[r.status] ?? {
+          const status = STATUS_LABELS[r.status ?? -1] ?? {
             label: "Unknown",
             className: "text-gray-500",
           };

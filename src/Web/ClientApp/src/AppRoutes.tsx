@@ -1,5 +1,3 @@
-import { Counter } from "./components/Counter";
-import { FetchData } from "./components/FetchData";
 import { HomePage } from "./pages/HomePage";
 import { BookPage } from "./pages/BookPage";
 import { ReservationsPage } from "./pages/ReservationsPage";
@@ -13,22 +11,6 @@ const AppRoutes = [
     element: (
       <ProtectedRoute>
         <HomePage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/counter",
-    element: (
-      <ProtectedRoute>
-        <Counter />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/fetch-data",
-    element: (
-      <ProtectedRoute>
-        <FetchData />
       </ProtectedRoute>
     ),
   },

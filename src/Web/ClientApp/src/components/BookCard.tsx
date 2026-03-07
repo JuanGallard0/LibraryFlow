@@ -1,8 +1,13 @@
 import { useNavigate } from "react-router-dom";
+import { BookDto } from "../web-api-client.ts";
 
-export function BookCard({ book }) {
+interface BookCardProps {
+  book: BookDto;
+}
+
+export function BookCard({ book }: BookCardProps) {
   const navigate = useNavigate();
-  const available = book.availableCopies > 0;
+  const available = (book.availableCopies ?? 0) > 0;
 
   return (
     <div

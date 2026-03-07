@@ -10,12 +10,11 @@ export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setError("");
     try {
       await login(email, password);
-      const returnUrl = location.state?.returnUrl || "/";
+      const returnUrl = (location.state as { returnUrl?: string })?.returnUrl ?? "/";
       navigate(returnUrl, { replace: true });
     } catch {
       setError("Invalid email or password.");
@@ -31,7 +30,7 @@ export function LoginPage() {
             {error}
           </div>
         )}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => { e.preventDefault(); void handleSubmit(); }}>
           <div className="mb-4">
             <label
               htmlFor="email"

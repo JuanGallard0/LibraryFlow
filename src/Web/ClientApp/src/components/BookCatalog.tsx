@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BooksClient } from "../web-api-client.ts";
+import { BooksClient, BookDto } from "../web-api-client.ts";
 import { BookCard } from "./BookCard";
 
 const client = new BooksClient();
@@ -7,7 +7,7 @@ const client = new BooksClient();
 const PAGE_SIZE = 9;
 
 export function BookCatalog() {
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState<BookDto[]>([]);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
@@ -28,12 +28,6 @@ export function BookCatalog() {
       .finally(() => setLoading(false));
   }, [query, page]);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setPage(1);
-    setQuery(search);
-  };
-
   const handleClear = () => {
     setSearch("");
     setPage(1);
@@ -44,7 +38,14 @@ export function BookCatalog() {
     <div>
       <h1 className="text-2xl font-semibold mb-4">Book Catalog</h1>
 
-      <form onSubmit={handleSearch} className="flex gap-2 mb-6">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          setPage(1);
+          setQuery(search);
+        }}
+        className="flex gap-2 mb-6"
+      >
         <input
           type="text"
           placeholder="Search by title or author..."
