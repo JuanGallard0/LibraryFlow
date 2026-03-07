@@ -7,6 +7,79 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
+export class BooksClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * Get books with pagination
+     * @param search (optional) 
+     * @param genre (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @return OK
+     */
+    getBooksWithPagination(search: string | undefined, genre: string | undefined, pageNumber: number | undefined, pageSize: number | undefined): Promise<PaginatedListOfBookDto> {
+        let url_ = this.baseUrl + "/api/Books?";
+        if (search === null)
+            throw new globalThis.Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        if (genre === null)
+            throw new globalThis.Error("The parameter 'genre' cannot be null.");
+        else if (genre !== undefined)
+            url_ += "Genre=" + encodeURIComponent("" + genre) + "&";
+        if (pageNumber === null)
+            throw new globalThis.Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new globalThis.Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetBooksWithPagination(_response);
+        });
+    }
+
+    protected processGetBooksWithPagination(response: Response): Promise<PaginatedListOfBookDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfBookDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaginatedListOfBookDto>(null as any);
+    }
+}
+
 export class TodoItemsClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -1206,6 +1279,82 @@ export interface IAccessTokenResponse {
     [key: string]: any;
 }
 
+export class BookDto implements IBookDto {
+    id?: number;
+    title?: string;
+    isbn?: string;
+    genre?: string | undefined;
+    publishedYear?: number;
+    authorName?: string;
+    availableCopies?: number;
+    totalCopies?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IBookDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.title = _data["title"];
+            this.isbn = _data["isbn"];
+            this.genre = _data["genre"];
+            this.publishedYear = _data["publishedYear"];
+            this.authorName = _data["authorName"];
+            this.availableCopies = _data["availableCopies"];
+            this.totalCopies = _data["totalCopies"];
+        }
+    }
+
+    static fromJS(data: any): BookDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BookDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["title"] = this.title;
+        data["isbn"] = this.isbn;
+        data["genre"] = this.genre;
+        data["publishedYear"] = this.publishedYear;
+        data["authorName"] = this.authorName;
+        data["availableCopies"] = this.availableCopies;
+        data["totalCopies"] = this.totalCopies;
+        return data;
+    }
+}
+
+export interface IBookDto {
+    id?: number;
+    title?: string;
+    isbn?: string;
+    genre?: string | undefined;
+    publishedYear?: number;
+    authorName?: string;
+    availableCopies?: number;
+    totalCopies?: number;
+
+    [key: string]: any;
+}
+
 export class CreateTodoItemCommand implements ICreateTodoItemCommand {
     listId?: number;
     title?: string | undefined;
@@ -1650,6 +1799,85 @@ export class LookupDto implements ILookupDto {
 export interface ILookupDto {
     id?: number;
     title?: string | undefined;
+
+    [key: string]: any;
+}
+
+export class PaginatedListOfBookDto implements IPaginatedListOfBookDto {
+    items!: BookDto[];
+    pageNumber!: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IPaginatedListOfBookDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.items = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(BookDto.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfBookDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfBookDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfBookDto {
+    items: BookDto[];
+    pageNumber: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 
     [key: string]: any;
 }

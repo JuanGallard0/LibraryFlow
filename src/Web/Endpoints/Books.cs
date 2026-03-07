@@ -8,7 +8,7 @@ public class Books : EndpointGroupBase
 {
     public override void Map(RouteGroupBuilder groupBuilder)
     {
-        groupBuilder.MapGet(GetBooksWithPagination).RequireAuthorization();
+        groupBuilder.MapGet(GetBooksWithPagination);
     }
 
     [EndpointName(nameof(GetBooksWithPagination))]

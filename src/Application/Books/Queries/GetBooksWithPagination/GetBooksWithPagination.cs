@@ -8,8 +8,8 @@ public record GetBooksWithPaginationQuery : IRequest<PaginatedList<BookDto>>
 {
     public string? Search { get; init; }
     public string? Genre { get; init; }
-    public int PageNumber { get; init; } = 1;
-    public int PageSize { get; init; } = 10;
+    public int? PageNumber { get; init; }
+    public int? PageSize { get; init; }
 }
 
 public class GetBooksWithPaginationQueryHandler : IRequestHandler<GetBooksWithPaginationQuery, PaginatedList<BookDto>>
@@ -35,6 +35,6 @@ public class GetBooksWithPaginationQueryHandler : IRequestHandler<GetBooksWithPa
             .Where(b => string.IsNullOrEmpty(request.Genre) || b.Genre == request.Genre)
             .OrderBy(b => b.Title)
             .ProjectTo<BookDto>(_mapper.ConfigurationProvider)
-            .PaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
+            .PaginatedListAsync(request.PageNumber ?? 1, request.PageSize ?? 10, cancellationToken);
     }
 }
