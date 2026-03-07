@@ -1,31 +1,43 @@
 import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
-import { Home } from "./components/Home";
-import { LoginPage } from "./components/api-authorization/LoginPage";
-import { RegisterPage } from "./components/api-authorization/RegisterPage";
+import { HomePage } from "./pages/HomePage";
+import { LoginPage } from "./pages/LoginPage";
+import { RegisterPage } from "./pages/RegisterPage";
 import { ProtectedRoute } from "./components/api-authorization/ProtectedRoute";
 
 const AppRoutes = [
   {
     index: true,
-    element: <Home />
+    element: (
+      <ProtectedRoute>
+        <HomePage />
+      </ProtectedRoute>
+    ),
   },
   {
-    path: '/counter',
-    element: <Counter />
+    path: "/counter",
+    element: (
+      <ProtectedRoute>
+        <Counter />
+      </ProtectedRoute>
+    ),
   },
   {
-    path: '/fetch-data',
-    element: <ProtectedRoute><FetchData /></ProtectedRoute>
+    path: "/fetch-data",
+    element: (
+      <ProtectedRoute>
+        <FetchData />
+      </ProtectedRoute>
+    ),
   },
   {
-    path: '/login',
-    element: <LoginPage />
+    path: "/login",
+    element: <LoginPage />,
   },
   {
-    path: '/register',
-    element: <RegisterPage />
-  }
+    path: "/register",
+    element: <RegisterPage />,
+  },
 ];
 
 export default AppRoutes;

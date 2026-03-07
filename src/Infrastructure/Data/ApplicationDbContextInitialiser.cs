@@ -112,9 +112,16 @@ public class ApplicationDbContextInitialiser
             _context.Authors.AddRange(tolkien, orwell, rowling);
             _context.Books.AddRange(lotr, hobbit, nineteenEightyFour, animalFarm, harryPotter);
 
-            var alice = new Member { FirstName = "Alice", LastName = "Smith", Email = "alice@example.com", MemberSince = new DateOnly(2023, 1, 15), Status = MembershipStatus.Active };
-            var bob = new Member { FirstName = "Bob", LastName = "Johnson", Email = "bob@example.com", MemberSince = new DateOnly(2022, 6, 10), Status = MembershipStatus.Active };
-            var carol = new Member { FirstName = "Carol", LastName = "Williams", Email = "carol@example.com", MemberSince = new DateOnly(2021, 3, 22), Status = MembershipStatus.Suspended };
+            var aliceUser = new ApplicationUser { UserName = "alice@example.com", Email = "alice@example.com" };
+            var bobUser = new ApplicationUser { UserName = "bob@example.com", Email = "bob@example.com" };
+            var carolUser = new ApplicationUser { UserName = "carol@example.com", Email = "carol@example.com" };
+            await _userManager.CreateAsync(aliceUser, "Member1!");
+            await _userManager.CreateAsync(bobUser, "Member1!");
+            await _userManager.CreateAsync(carolUser, "Member1!");
+
+            var alice = new Member { UserId = aliceUser.Id, FirstName = "Alice", LastName = "Smith", Email = "alice@example.com", MemberSince = new DateOnly(2023, 1, 15), Status = MembershipStatus.Active };
+            var bob = new Member { UserId = bobUser.Id, FirstName = "Bob", LastName = "Johnson", Email = "bob@example.com", MemberSince = new DateOnly(2022, 6, 10), Status = MembershipStatus.Active };
+            var carol = new Member { UserId = carolUser.Id, FirstName = "Carol", LastName = "Williams", Email = "carol@example.com", MemberSince = new DateOnly(2021, 3, 22), Status = MembershipStatus.Suspended };
 
             _context.Members.AddRange(alice, bob, carol);
 

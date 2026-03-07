@@ -7,7 +7,6 @@ namespace LibraryFlow.Application.Books.Queries.GetBooksWithPagination;
 public record GetBooksWithPaginationQuery : IRequest<PaginatedList<BookDto>>
 {
     public string? Search { get; init; }
-    public string? Genre { get; init; }
     public int? PageNumber { get; init; }
     public int? PageSize { get; init; }
 }
@@ -24,7 +23,6 @@ public class GetBooksWithPaginationQueryHandler(IApplicationDbContext context, I
                         b.Title.Contains(request.Search) ||
                         b.ISBN.Contains(request.Search) ||
                         (b.Author.FirstName + " " + b.Author.LastName).Contains(request.Search))
-            .Where(b => string.IsNullOrEmpty(request.Genre) || b.Genre == request.Genre)
             .OrderBy(b => b.Title)
             .ProjectTo<BookDto>(mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber ?? 1, request.PageSize ?? 10, cancellationToken);

@@ -8,6 +8,13 @@ public class MemberConfiguration : IEntityTypeConfiguration<Member>
 {
     public void Configure(EntityTypeBuilder<Member> builder)
     {
+        builder.Property(m => m.UserId)
+            .HasMaxLength(450)
+            .IsRequired();
+
+        builder.HasIndex(m => m.UserId)
+            .IsUnique();
+
         builder.Property(m => m.FirstName)
             .HasMaxLength(100)
             .IsRequired();
