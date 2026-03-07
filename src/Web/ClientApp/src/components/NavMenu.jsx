@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
-import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './api-authorization/AuthContext';
-import './NavMenu.css';
 
 function NavMenuInner() {
   const { isAuthenticated, logout } = useAuth();
@@ -16,58 +14,56 @@ function NavMenuInner() {
   return (
     <>
       {isAuthenticated ? (
-        <NavItem>
-          <button className="btn btn-link nav-link text-dark" onClick={handleLogout}>Log out</button>
-        </NavItem>
+        <li>
+          <button className="text-gray-700 hover:text-gray-900 bg-transparent border-0 cursor-pointer px-3 py-2" onClick={handleLogout}>
+            Log out
+          </button>
+        </li>
       ) : (
         <>
-          <NavItem>
-            <NavLink tag={Link} className="text-dark" to="/login">Log in</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink tag={Link} className="text-dark" to="/register">Register</NavLink>
-          </NavItem>
+          <li>
+            <Link className="text-gray-700 hover:text-gray-900 px-3 py-2 block" to="/login">Log in</Link>
+          </li>
+          <li>
+            <Link className="text-gray-700 hover:text-gray-900 px-3 py-2 block" to="/register">Register</Link>
+          </li>
         </>
       )}
     </>
   );
 }
 
-export class NavMenu extends Component {
-  static displayName = NavMenu.name;
+export function NavMenu() {
+  const [collapsed, setCollapsed] = useState(true);
 
-  constructor(props) {
-    super(props);
-    this.toggleNavbar = this.toggleNavbar.bind(this);
-    this.state = { collapsed: true };
-  }
-
-  toggleNavbar() {
-    this.setState({ collapsed: !this.state.collapsed });
-  }
-
-  render() {
-    return (
-      <header>
-        <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
-          <NavbarBrand tag={Link} to="/">LibraryFlow.Web</NavbarBrand>
-          <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-          <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
-            <ul className="navbar-nav flex-grow">
-              <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/counter">Counter</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/fetch-data">Fetch data</NavLink>
-              </NavItem>
-              <NavMenuInner />
-            </ul>
-          </Collapse>
-        </Navbar>
-      </header>
-    );
-  }
+  return (
+    <header className="border-b shadow-sm mb-6">
+      <nav className="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
+        <Link to="/" className="text-lg font-semibold text-gray-900 whitespace-nowrap">
+          LibraryFlow.Web
+        </Link>
+        <button
+          className="sm:hidden p-2 text-gray-600 hover:text-gray-900"
+          onClick={() => setCollapsed(!collapsed)}
+          aria-label="Toggle navigation"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <ul className={`${collapsed ? 'hidden' : 'flex'} sm:flex flex-col sm:flex-row sm:items-center gap-1 absolute sm:static top-14 left-0 right-0 bg-white sm:bg-transparent p-4 sm:p-0 border-b sm:border-0 shadow-sm sm:shadow-none z-10`}>
+          <li>
+            <Link className="text-gray-700 hover:text-gray-900 px-3 py-2 block" to="/">Home</Link>
+          </li>
+          <li>
+            <Link className="text-gray-700 hover:text-gray-900 px-3 py-2 block" to="/counter">Counter</Link>
+          </li>
+          <li>
+            <Link className="text-gray-700 hover:text-gray-900 px-3 py-2 block" to="/fetch-data">Fetch data</Link>
+          </li>
+          <NavMenuInner />
+        </ul>
+      </nav>
+    </header>
+  );
 }

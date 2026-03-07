@@ -78,6 +78,61 @@ export class BooksClient {
         }
         return Promise.resolve<PaginatedListOfBookDto>(null as any);
     }
+
+    /**
+     * Create a new book
+     * @return Created
+     */
+    createBook(body: CreateBookCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Books";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateBook(_response);
+        });
+    }
+
+    protected processCreateBook(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result201 = resultData201 !== undefined ? resultData201 : null as any;
+    
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(null as any);
+    }
 }
 
 export class TodoItemsClient {
@@ -1351,6 +1406,70 @@ export interface IBookDto {
     authorName?: string;
     availableCopies?: number;
     totalCopies?: number;
+
+    [key: string]: any;
+}
+
+export class CreateBookCommand implements ICreateBookCommand {
+    title?: string;
+    isbn?: string;
+    genre?: string | undefined;
+    publishedYear?: number;
+    authorId?: number;
+
+    [key: string]: any;
+
+    constructor(data?: ICreateBookCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.title = _data["title"];
+            this.isbn = _data["isbn"];
+            this.genre = _data["genre"];
+            this.publishedYear = _data["publishedYear"];
+            this.authorId = _data["authorId"];
+        }
+    }
+
+    static fromJS(data: any): CreateBookCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateBookCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["title"] = this.title;
+        data["isbn"] = this.isbn;
+        data["genre"] = this.genre;
+        data["publishedYear"] = this.publishedYear;
+        data["authorId"] = this.authorId;
+        return data;
+    }
+}
+
+export interface ICreateBookCommand {
+    title?: string;
+    isbn?: string;
+    genre?: string | undefined;
+    publishedYear?: number;
+    authorId?: number;
 
     [key: string]: any;
 }

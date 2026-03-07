@@ -24,7 +24,7 @@ export class Counter extends Component {
 
         <p aria-live="polite">Current count: <strong>{this.state.currentCount}</strong></p>
 
-        <button className="btn btn-primary" onClick={this.incrementCounter}>Increment</button>
+        <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onClick={this.incrementCounter}>Increment</button>
       </div>
     );
   }

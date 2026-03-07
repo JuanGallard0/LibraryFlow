@@ -15,22 +15,22 @@ export class FetchData extends Component {
 
   static renderForecastsTable(forecasts) {
     return (
-      <table className="table table-striped" aria-labelledby="tableLabel">
+      <table className="w-full border-collapse text-left" aria-labelledby="tableLabel">
         <thead>
-          <tr>
-            <th>Date</th>
-            <th>Temp. (C)</th>
-            <th>Temp. (F)</th>
-            <th>Summary</th>
+          <tr className="border-b bg-gray-50">
+            <th className="px-4 py-2 font-semibold text-gray-700">Date</th>
+            <th className="px-4 py-2 font-semibold text-gray-700">Temp. (C)</th>
+            <th className="px-4 py-2 font-semibold text-gray-700">Temp. (F)</th>
+            <th className="px-4 py-2 font-semibold text-gray-700">Summary</th>
           </tr>
         </thead>
         <tbody>
-          {forecasts.map(forecast =>
-            <tr key={forecast.date}>
-              <td>{new Date(forecast.date).toLocaleDateString()}</td>
-              <td>{forecast.temperatureC}</td>
-              <td>{forecast.temperatureF}</td>
-              <td>{forecast.summary}</td>
+          {forecasts.map((forecast, i) =>
+            <tr key={forecast.date} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+              <td className="px-4 py-2">{new Date(forecast.date).toLocaleDateString()}</td>
+              <td className="px-4 py-2">{forecast.temperatureC}</td>
+              <td className="px-4 py-2">{forecast.temperatureF}</td>
+              <td className="px-4 py-2">{forecast.summary}</td>
             </tr>
           )}
         </tbody>
