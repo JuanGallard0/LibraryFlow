@@ -1,5 +1,7 @@
+using LibraryFlow.Application.Books.Commands.CreateBook;
 using LibraryFlow.Application.Books.Queries.GetBooksWithPagination;
 using LibraryFlow.Application.Common.Models;
+using LibraryFlow.Domain.Constants;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace LibraryFlow.Web.Endpoints;
@@ -9,6 +11,7 @@ public class Books : EndpointGroupBase
     public override void Map(RouteGroupBuilder groupBuilder)
     {
         groupBuilder.MapGet(GetBooksWithPagination);
+        groupBuilder.MapPost(CreateBook).RequireAuthorization(Roles.Administrator);
     }
 
     [EndpointName(nameof(GetBooksWithPagination))]
@@ -21,5 +24,15 @@ public class Books : EndpointGroupBase
         var result = await sender.Send(query);
 
         return TypedResults.Ok(result);
+    }
+
+    [EndpointName(nameof(CreateBook))]
+    [EndpointSummary("Create a new book")]
+    [EndpointDescription("Creates a new book. Requires Administrator role.")]
+    public async Task<Created<int>> CreateBook(ISender sender, CreateBookCommand command)
+    {
+        var id = await sender.Send(command);
+
+        return TypedResults.Created($"/{nameof(Books)}/{id}", id);
     }
 }

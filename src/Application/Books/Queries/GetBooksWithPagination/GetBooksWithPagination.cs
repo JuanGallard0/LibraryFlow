@@ -12,20 +12,12 @@ public record GetBooksWithPaginationQuery : IRequest<PaginatedList<BookDto>>
     public int? PageSize { get; init; }
 }
 
-public class GetBooksWithPaginationQueryHandler : IRequestHandler<GetBooksWithPaginationQuery, PaginatedList<BookDto>>
+public class GetBooksWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper)
+    : IRequestHandler<GetBooksWithPaginationQuery, PaginatedList<BookDto>>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
-
-    public GetBooksWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper)
-    {
-        _context = context;
-        _mapper = mapper;
-    }
-
     public async Task<PaginatedList<BookDto>> Handle(GetBooksWithPaginationQuery request, CancellationToken cancellationToken)
     {
-        return await _context.Books
+        return await context.Books
             .Include(b => b.Author)
             .Include(b => b.Copies)
             .Where(b => string.IsNullOrEmpty(request.Search) ||
@@ -34,7 +26,7 @@ public class GetBooksWithPaginationQueryHandler : IRequestHandler<GetBooksWithPa
                         (b.Author.FirstName + " " + b.Author.LastName).Contains(request.Search))
             .Where(b => string.IsNullOrEmpty(request.Genre) || b.Genre == request.Genre)
             .OrderBy(b => b.Title)
-            .ProjectTo<BookDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<BookDto>(mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber ?? 1, request.PageSize ?? 10, cancellationToken);
     }
 }
