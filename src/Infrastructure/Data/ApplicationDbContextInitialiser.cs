@@ -91,52 +91,116 @@ public class ApplicationDbContextInitialiser
         // Seed, if necessary
         if (!_context.Authors.Any())
         {
-            var tolkien = new Author { FirstName = "J.R.R.", LastName = "Tolkien", Bio = "English author and philologist, best known for The Lord of the Rings." };
-            var orwell = new Author { FirstName = "George", LastName = "Orwell", Bio = "English novelist and essayist, known for Nineteen Eighty-Four and Animal Farm." };
-            var rowling = new Author { FirstName = "J.K.", LastName = "Rowling", Bio = "British author, best known for the Harry Potter fantasy series." };
+            // Autores
+            var galeano = new Author { FirstName = "Eduardo", LastName = "Galeano", Bio = "Escritor y periodista uruguayo, conocido por Las venas abiertas de América Latina." };
+            var marquez = new Author { FirstName = "Gabriel", LastName = "García Márquez", Bio = "Novelista y cuentista colombiano, ganador del Premio Nobel de Literatura en 1982." };
+            var cortazar = new Author { FirstName = "Julio", LastName = "Cortázar", Bio = "Escritor argentino de cuentos y novelas, reconocido por Rayuela y sus relatos fantásticos." };
+            var borges = new Author { FirstName = "Jorge Luis", LastName = "Borges", Bio = "Poeta, ensayista y cuentista argentino, considerado uno de los grandes maestros de la literatura universal." };
+            var allende = new Author { FirstName = "Isabel", LastName = "Allende", Bio = "Novelista chilena, autora de La casa de los espíritus y una de las escritoras más leídas en español." };
+            var fuentes = new Author { FirstName = "Carlos", LastName = "Fuentes", Bio = "Novelista y ensayista mexicano, figura clave del boom latinoamericano." };
+            var vargas = new Author { FirstName = "Mario", LastName = "Vargas Llosa", Bio = "Escritor peruano ganador del Premio Nobel de Literatura en 2010, autor de La ciudad y los perros." };
 
-            var lotr = new Book { Title = "The Lord of the Rings", ISBN = "978-0-261-10235-4", Genre = "Fantasy", PublishedYear = 1954, Author = tolkien };
-            var hobbit = new Book { Title = "The Hobbit", ISBN = "978-0-261-10221-7", Genre = "Fantasy", PublishedYear = 1937, Author = tolkien };
-            var nineteenEightyFour = new Book { Title = "Nineteen Eighty-Four", ISBN = "978-0-141-18776-1", Genre = "Dystopian", PublishedYear = 1949, Author = orwell };
-            var animalFarm = new Book { Title = "Animal Farm", ISBN = "978-0-141-18750-1", Genre = "Satire", PublishedYear = 1945, Author = orwell };
-            var harryPotter = new Book { Title = "Harry Potter and the Philosopher's Stone", ISBN = "978-0-7475-3269-9", Genre = "Fantasy", PublishedYear = 1997, Author = rowling };
+            // Libros
+            var venasAbiertas = new Book { Title = "Las venas abiertas de América Latina", ISBN = "978-84-323-0178-5", Genre = "Historia", PublishedYear = 1971, Author = galeano };
+            var cienAnios = new Book { Title = "Cien años de soledad", ISBN = "978-84-376-0494-7", Genre = "Realismo mágico", PublishedYear = 1967, Author = marquez };
+            var elAmor = new Book { Title = "El amor en los tiempos del cólera", ISBN = "978-84-376-0551-7", Genre = "Romance", PublishedYear = 1985, Author = marquez };
+            var rayuela = new Book { Title = "Rayuela", ISBN = "978-84-663-0951-3", Genre = "Novela experimental", PublishedYear = 1963, Author = cortazar };
+            var bestiario = new Book { Title = "Bestiario", ISBN = "978-84-204-2038-5", Genre = "Cuento", PublishedYear = 1951, Author = cortazar };
+            var fictions = new Book { Title = "Ficciones", ISBN = "978-84-206-8482-7", Genre = "Cuento", PublishedYear = 1944, Author = borges };
+            var aleph = new Book { Title = "El Aleph", ISBN = "978-84-206-8483-4", Genre = "Cuento", PublishedYear = 1949, Author = borges };
+            var casaEspiritus = new Book { Title = "La casa de los espíritus", ISBN = "978-84-666-0184-4", Genre = "Realismo mágico", PublishedYear = 1982, Author = allende };
+            var niebla = new Book { Title = "La niebla y la doncella", ISBN = "978-84-666-3521-4", Genre = "Misterio", PublishedYear = 2002, Author = allende };
+            var artemio = new Book { Title = "La muerte de Artemio Cruz", ISBN = "978-84-376-0232-5", Genre = "Novela histórica", PublishedYear = 1962, Author = fuentes };
+            var ciudadPerros = new Book { Title = "La ciudad y los perros", ISBN = "978-84-663-1987-1", Genre = "Novela", PublishedYear = 1963, Author = vargas };
 
-            lotr.Copies.Add(new BookCopy { CopyNumber = "LOTR-001", Condition = CopyCondition.Good, IsAvailable = true });
-            lotr.Copies.Add(new BookCopy { CopyNumber = "LOTR-002", Condition = CopyCondition.Fair, IsAvailable = true });
-            hobbit.Copies.Add(new BookCopy { CopyNumber = "HOB-001", Condition = CopyCondition.New, IsAvailable = true });
-            nineteenEightyFour.Copies.Add(new BookCopy { CopyNumber = "1984-001", Condition = CopyCondition.Good, IsAvailable = true });
-            animalFarm.Copies.Add(new BookCopy { CopyNumber = "AF-001", Condition = CopyCondition.Good, IsAvailable = false });
-            harryPotter.Copies.Add(new BookCopy { CopyNumber = "HP-001", Condition = CopyCondition.New, IsAvailable = true });
-            harryPotter.Copies.Add(new BookCopy { CopyNumber = "HP-002", Condition = CopyCondition.Good, IsAvailable = true });
+            // Copias
+            venasAbiertas.Copies.Add(new BookCopy { CopyNumber = "VEN-001", Condition = CopyCondition.Good, IsAvailable = true });
+            venasAbiertas.Copies.Add(new BookCopy { CopyNumber = "VEN-002", Condition = CopyCondition.Fair, IsAvailable = true });
 
-            _context.Authors.AddRange(tolkien, orwell, rowling);
-            _context.Books.AddRange(lotr, hobbit, nineteenEightyFour, animalFarm, harryPotter);
+            cienAnios.Copies.Add(new BookCopy { CopyNumber = "CAS-001", Condition = CopyCondition.New, IsAvailable = true });
+            cienAnios.Copies.Add(new BookCopy { CopyNumber = "CAS-002", Condition = CopyCondition.Good, IsAvailable = true });
+            cienAnios.Copies.Add(new BookCopy { CopyNumber = "CAS-003", Condition = CopyCondition.Fair, IsAvailable = false });
 
-            var aliceUser = new ApplicationUser { UserName = "alice@example.com", Email = "alice@example.com" };
-            var bobUser = new ApplicationUser { UserName = "bob@example.com", Email = "bob@example.com" };
-            var carolUser = new ApplicationUser { UserName = "carol@example.com", Email = "carol@example.com" };
-            await _userManager.CreateAsync(aliceUser, "Member1!");
-            await _userManager.CreateAsync(bobUser, "Member1!");
-            await _userManager.CreateAsync(carolUser, "Member1!");
+            elAmor.Copies.Add(new BookCopy { CopyNumber = "AMO-001", Condition = CopyCondition.Good, IsAvailable = true });
+            elAmor.Copies.Add(new BookCopy { CopyNumber = "AMO-002", Condition = CopyCondition.Poor, IsAvailable = true });
 
-            var alice = new Member { UserId = aliceUser.Id, FirstName = "Alice", LastName = "Smith", Email = "alice@example.com", MemberSince = new DateOnly(2023, 1, 15), Status = MembershipStatus.Active };
-            var bob = new Member { UserId = bobUser.Id, FirstName = "Bob", LastName = "Johnson", Email = "bob@example.com", MemberSince = new DateOnly(2022, 6, 10), Status = MembershipStatus.Active };
-            var carol = new Member { UserId = carolUser.Id, FirstName = "Carol", LastName = "Williams", Email = "carol@example.com", MemberSince = new DateOnly(2021, 3, 22), Status = MembershipStatus.Suspended };
+            rayuela.Copies.Add(new BookCopy { CopyNumber = "RAY-001", Condition = CopyCondition.New, IsAvailable = true });
+            rayuela.Copies.Add(new BookCopy { CopyNumber = "RAY-002", Condition = CopyCondition.Good, IsAvailable = false });
 
-            _context.Members.AddRange(alice, bob, carol);
+            bestiario.Copies.Add(new BookCopy { CopyNumber = "BES-001", Condition = CopyCondition.Fair, IsAvailable = true });
+
+            fictions.Copies.Add(new BookCopy { CopyNumber = "FIC-001", Condition = CopyCondition.Good, IsAvailable = true });
+            fictions.Copies.Add(new BookCopy { CopyNumber = "FIC-002", Condition = CopyCondition.New, IsAvailable = true });
+
+            aleph.Copies.Add(new BookCopy { CopyNumber = "ALE-001", Condition = CopyCondition.Good, IsAvailable = true });
+
+            casaEspiritus.Copies.Add(new BookCopy { CopyNumber = "CSE-001", Condition = CopyCondition.New, IsAvailable = true });
+            casaEspiritus.Copies.Add(new BookCopy { CopyNumber = "CSE-002", Condition = CopyCondition.Good, IsAvailable = false });
+
+            niebla.Copies.Add(new BookCopy { CopyNumber = "NIE-001", Condition = CopyCondition.Good, IsAvailable = true });
+
+            artemio.Copies.Add(new BookCopy { CopyNumber = "ART-001", Condition = CopyCondition.Fair, IsAvailable = true });
+            artemio.Copies.Add(new BookCopy { CopyNumber = "ART-002", Condition = CopyCondition.Good, IsAvailable = true });
+
+            ciudadPerros.Copies.Add(new BookCopy { CopyNumber = "CDP-001", Condition = CopyCondition.New, IsAvailable = true });
+            ciudadPerros.Copies.Add(new BookCopy { CopyNumber = "CDP-002", Condition = CopyCondition.Good, IsAvailable = true });
+
+            _context.Authors.AddRange(galeano, marquez, cortazar, borges, allende, fuentes, vargas);
+            _context.Books.AddRange(venasAbiertas, cienAnios, elAmor, rayuela, bestiario, fictions, aleph, casaEspiritus, niebla, artemio, ciudadPerros);
+
+            // Usuarios miembros
+            var luciaUser = new ApplicationUser { UserName = "lucia@ejemplo.com", Email = "lucia@ejemplo.com" };
+            var miguelUser = new ApplicationUser { UserName = "miguel@ejemplo.com", Email = "miguel@ejemplo.com" };
+            var sofiaUser = new ApplicationUser { UserName = "sofia@ejemplo.com", Email = "sofia@ejemplo.com" };
+            var carlosUser = new ApplicationUser { UserName = "carlos@ejemplo.com", Email = "carlos@ejemplo.com" };
+            var anaUser = new ApplicationUser { UserName = "ana@ejemplo.com", Email = "ana@ejemplo.com" };
+            await _userManager.CreateAsync(luciaUser, "Miembro1!");
+            await _userManager.CreateAsync(miguelUser, "Miembro1!");
+            await _userManager.CreateAsync(sofiaUser, "Miembro1!");
+            await _userManager.CreateAsync(carlosUser, "Miembro1!");
+            await _userManager.CreateAsync(anaUser, "Miembro1!");
+
+            var lucia = new Member { UserId = luciaUser.Id, FirstName = "Lucía", LastName = "Fernández", Email = "lucia@ejemplo.com", MemberSince = new DateOnly(2023, 3, 10), Status = MembershipStatus.Active };
+            var miguel = new Member { UserId = miguelUser.Id, FirstName = "Miguel", LastName = "Rodríguez", Email = "miguel@ejemplo.com", MemberSince = new DateOnly(2022, 8, 5), Status = MembershipStatus.Active };
+            var sofia = new Member { UserId = sofiaUser.Id, FirstName = "Sofía", LastName = "López", Email = "sofia@ejemplo.com", MemberSince = new DateOnly(2021, 11, 20), Status = MembershipStatus.Suspended };
+            var carlos = new Member { UserId = carlosUser.Id, FirstName = "Carlos", LastName = "Martínez", Email = "carlos@ejemplo.com", MemberSince = new DateOnly(2024, 1, 8), Status = MembershipStatus.Active };
+            var ana = new Member { UserId = anaUser.Id, FirstName = "Ana", LastName = "González", Email = "ana@ejemplo.com", MemberSince = new DateOnly(2020, 5, 14), Status = MembershipStatus.Expired };
+
+            _context.Members.AddRange(lucia, miguel, sofia, carlos, ana);
 
             await _context.SaveChangesAsync();
 
-            // Loans (after SaveChanges so IDs are assigned)
-            var afCopy = animalFarm.Copies.First();
-            _context.Loans.Add(new Loan
-            {
-                BookCopy = afCopy,
-                Member = bob,
-                BorrowedAt = DateTime.UtcNow.AddDays(-10),
-                DueAt = DateTime.UtcNow.AddDays(4),
-                Status = LoanStatus.Active
-            });
+            // Préstamos (después de SaveChanges para que los IDs estén asignados)
+            var cienAniosCopy2 = cienAnios.Copies[2]; // no disponible
+            var rayuelaCopy2 = rayuela.Copies[1];      // no disponible
+            var casaCopy2 = casaEspiritus.Copies[1];   // no disponible
+
+            _context.Loans.AddRange(
+                new Loan
+                {
+                    BookCopy = cienAniosCopy2,
+                    Member = miguel,
+                    BorrowedAt = DateTime.UtcNow.AddDays(-8),
+                    DueAt = DateTime.UtcNow.AddDays(6),
+                    Status = LoanStatus.Active
+                },
+                new Loan
+                {
+                    BookCopy = rayuelaCopy2,
+                    Member = lucia,
+                    BorrowedAt = DateTime.UtcNow.AddDays(-20),
+                    DueAt = DateTime.UtcNow.AddDays(-6),
+                    Status = LoanStatus.Active
+                },
+                new Loan
+                {
+                    BookCopy = casaCopy2,
+                    Member = carlos,
+                    BorrowedAt = DateTime.UtcNow.AddDays(-30),
+                    DueAt = DateTime.UtcNow.AddDays(-16),
+                    Status = LoanStatus.Returned
+                }
+            );
 
             await _context.SaveChangesAsync();
         }
