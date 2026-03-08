@@ -9,11 +9,12 @@ interface BookPageState {
 export function BookPage() {
   const { state } = useLocation();
   const navigate = useNavigate();
+  const bookState = state as BookPageState;
 
-  if (!(state as BookPageState)?.book) {
+  if (!bookState?.book) {
     navigate("/", { replace: true });
     return null;
   }
 
-  return <BookDetail book={(state as BookPageState).book} />;
+  return <BookDetail book={bookState.book} />;
 }

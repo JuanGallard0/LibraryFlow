@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { BooksClient, BookDto } from "../web-api-client.ts";
 import { BookCard } from "./BookCard";
 import { useAuth } from "./api-authorization/AuthContext";
+import { ErrorAlert } from "./ErrorAlert";
 
 const client = new BooksClient();
 
@@ -27,7 +28,10 @@ export function BookCatalog() {
         setBooks(data.items);
         setTotalPages(data.totalPages ?? 1);
       })
-      .catch(() => setError("Error al cargar los libros."))
+      .catch((err) => {
+        console.error('Failed to load books:', err);
+        setError("Error al cargar los libros.");
+      })
       .finally(() => setLoading(false));
   }, [query, page]);
 
@@ -83,11 +87,7 @@ export function BookCatalog() {
         )}
       </form>
 
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
+      {error && <ErrorAlert message={error} className="mb-4" />}
 
       {loading ? (
         <p>

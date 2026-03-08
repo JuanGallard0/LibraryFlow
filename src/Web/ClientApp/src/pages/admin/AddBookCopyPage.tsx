@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { BooksClient, BookDto, CreateBookCopyRequest } from "../../web-api-client.ts";
+import { ErrorAlert } from "../../components/ErrorAlert";
 
 const booksClient = new BooksClient();
 
@@ -13,7 +14,7 @@ export function AddBookCopyPage() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const book = (state as LocationState)?.book;
-  const bookId = parseInt(id!, 10);
+  const bookId = parseInt(id ?? "", 10);
 
   const [copyNumber, setCopyNumber] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -26,7 +27,8 @@ export function AddBookCopyPage() {
     try {
       await booksClient.createBookCopy(bookId, new CreateBookCopyRequest({ copyNumber }));
       navigate(`/books/${bookId}`, { state: { book } });
-    } catch {
+    } catch (err) {
+      console.error('Failed to add book copy:', err);
       setError("Error al agregar el ejemplar. Por favor intenta de nuevo.");
       setSubmitting(false);
     }
@@ -51,11 +53,7 @@ export function AddBookCopyPage() {
           />
         </div>
 
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-            {error}
-          </div>
-        )}
+        {error && <ErrorAlert message={error} />}
 
         <div className="flex items-center gap-4">
           <button

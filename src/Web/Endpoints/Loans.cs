@@ -1,5 +1,7 @@
+using LibraryFlow.Application.Common.Interfaces;
 using LibraryFlow.Application.Loans.Commands.CreateLoan;
 using LibraryFlow.Application.Loans.Queries.GetLoans;
+using LibraryFlow.Application.Loans.Queries.GetUserLoans;
 using LibraryFlow.Domain.Constants;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -10,6 +12,7 @@ public class Loans : EndpointGroupBase
     public override void Map(RouteGroupBuilder groupBuilder)
     {
         groupBuilder.MapGet(GetLoans).RequireAuthorization(p => p.RequireRole(Roles.Administrator));
+        groupBuilder.MapGet(GetMyLoans, "me").RequireAuthorization();
         groupBuilder.MapPost(CreateLoan).RequireAuthorization(p => p.RequireRole(Roles.Administrator));
     }
 
@@ -19,6 +22,16 @@ public class Loans : EndpointGroupBase
     public async Task<Ok<List<LoanDto>>> GetLoans(ISender sender, [AsParameters] GetLoansQuery query)
     {
         var result = await sender.Send(query);
+
+        return TypedResults.Ok(result);
+    }
+
+    [EndpointName(nameof(GetMyLoans))]
+    [EndpointSummary("Get my loans")]
+    [EndpointDescription("Returns all loans for the authenticated member, ordered by most recent first.")]
+    public async Task<Ok<List<LoanDto>>> GetMyLoans(ISender sender, IUser currentUser)
+    {
+        var result = await sender.Send(new GetUserLoansQuery(currentUser.Id!));
 
         return TypedResults.Ok(result);
     }

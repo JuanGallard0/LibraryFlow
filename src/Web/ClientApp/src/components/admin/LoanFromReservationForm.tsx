@@ -1,19 +1,20 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ReservationsClient, LoansClient, MembersClient, ReservationDto, MemberDto, CreateLoanCommand } from "../../web-api-client.ts";
+import { DATE_LOCALE } from "../../constants";
+import { ErrorAlert } from "../ErrorAlert";
 
 const reservationsClient = new ReservationsClient();
 const loansClient = new LoansClient();
 const membersClient = new MembersClient();
 
-// Status 1 = Pending (see ReservationList.tsx)
 const PENDING_STATUS = 1;
 
 export function LoanFromReservationForm() {
   const navigate = useNavigate();
   const [reservations, setReservations] = useState<ReservationDto[]>([]);
+  const [memberMap, setMemberMap] = useState<Record<number, MemberDto>>({});
   const [selected, setSelected] = useState<ReservationDto | null>(null);
-  const [member, setMember] = useState<MemberDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -22,15 +23,24 @@ export function LoanFromReservationForm() {
   useEffect(() => {
     reservationsClient
       .getAllReservations()
-      .then((data) => setReservations(data.filter((r) => r.status === PENDING_STATUS)))
-      .catch(() => setFetchError("Error al cargar las reservaciones."))
+      .then((data) => {
+        const pending = data.filter((r) => r.status === PENDING_STATUS);
+        setReservations(pending);
+        const uniqueIds = [...new Set(pending.map((r) => r.memberId).filter((id): id is number => id !== undefined))];
+        Promise.all(uniqueIds.map((id) => membersClient.getMember(id)))
+          .then((members) => {
+            const map: Record<number, MemberDto> = {};
+            members.forEach((m) => { if (m.id !== undefined) map[m.id] = m; });
+            setMemberMap(map);
+          })
+          .catch((err) => console.error('Failed to load member details:', err));
+      })
+      .catch((err) => {
+        console.error('Failed to load reservations:', err);
+        setFetchError("Error al cargar las reservaciones.");
+      })
       .finally(() => setLoading(false));
   }, []);
-
-  useEffect(() => {
-    if (!selected?.memberId) { setMember(null); return; }
-    membersClient.getMember(selected.memberId).then(setMember).catch(() => setMember(null));
-  }, [selected]);
 
   const handleSubmit = async () => {
     if (!selected) return;
@@ -45,17 +55,18 @@ export function LoanFromReservationForm() {
         })
       );
       navigate("/admin/loans");
-    } catch {
+    } catch (err) {
+      console.error('Failed to create loan from reservation:', err);
       setError("Error al crear el préstamo. Por favor intenta de nuevo.");
       setSubmitting(false);
     }
   };
 
   if (loading) return <p><em>Cargando reservaciones...</em></p>;
-  if (fetchError) return (
-    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{fetchError}</div>
-  );
+  if (fetchError) return <ErrorAlert message={fetchError} />;
   if (reservations.length === 0) return <p className="text-gray-500">No hay reservaciones pendientes.</p>;
+
+  const selectedMember = selected?.memberId !== undefined ? memberMap[selected.memberId] : undefined;
 
   return (
     <div className="space-y-6">
@@ -67,28 +78,43 @@ export function LoanFromReservationForm() {
               <tr className="border-b bg-gray-50">
                 <th className="px-4 py-2 font-semibold text-gray-700">Libro</th>
                 <th className="px-4 py-2 font-semibold text-gray-700">ISBN</th>
+                <th className="px-4 py-2 font-semibold text-gray-700">Miembro</th>
                 <th className="px-4 py-2 font-semibold text-gray-700">Reservado</th>
                 <th className="px-4 py-2 font-semibold text-gray-700">Vence</th>
                 <th className="px-4 py-2"></th>
               </tr>
             </thead>
             <tbody>
-              {reservations.map((r, i) => (
-                <tr key={r.id} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                  <td className="px-4 py-2">{r.bookTitle}</td>
-                  <td className="px-4 py-2">{r.bookISBN}</td>
-                  <td className="px-4 py-2">{r.reservedAt ? new Date(r.reservedAt).toLocaleDateString() : "—"}</td>
-                  <td className="px-4 py-2">{r.expiresAt ? new Date(r.expiresAt).toLocaleDateString() : "—"}</td>
-                  <td className="px-4 py-2">
-                    <button
-                      onClick={() => setSelected(r)}
-                      className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
-                    >
-                      Seleccionar
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {reservations.map((r, i) => {
+                const member = r.memberId !== undefined ? memberMap[r.memberId] : undefined;
+                return (
+                  <tr key={r.id} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                    <td className="px-4 py-2">{r.bookTitle}</td>
+                    <td className="px-4 py-2">{r.bookISBN}</td>
+                    <td className="px-4 py-2">
+                      {member ? (
+                        <>
+                          <span className="font-medium">{member.firstName} {member.lastName}</span>
+                          <br />
+                          <span className="text-gray-500">{member.email}</span>
+                        </>
+                      ) : (
+                        <span className="text-gray-400">#{r.memberId}</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2">{r.reservedAt ? new Date(r.reservedAt).toLocaleDateString(DATE_LOCALE) : "—"}</td>
+                    <td className="px-4 py-2">{r.expiresAt ? new Date(r.expiresAt).toLocaleDateString(DATE_LOCALE) : "—"}</td>
+                    <td className="px-4 py-2">
+                      <button
+                        onClick={() => setSelected(r)}
+                        className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+                      >
+                        Seleccionar
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </>
@@ -102,19 +128,17 @@ export function LoanFromReservationForm() {
 
           <div className="bg-gray-50 border rounded p-4 text-sm space-y-1">
             <p className="font-medium text-gray-700 mb-1">Miembro</p>
-            {member ? (
+            {selectedMember ? (
               <>
-                <p><span className="font-medium">Nombre:</span> {member.firstName} {member.lastName}</p>
-                <p><span className="font-medium">Correo:</span> {member.email}</p>
+                <p><span className="font-medium">Nombre:</span> {selectedMember.firstName} {selectedMember.lastName}</p>
+                <p><span className="font-medium">Correo:</span> {selectedMember.email}</p>
               </>
             ) : (
               <p className="text-gray-400">Cargando información del miembro...</p>
             )}
           </div>
 
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{error}</div>
-          )}
+          {error && <ErrorAlert message={error} />}
 
           <div className="flex gap-2">
             <button
@@ -126,7 +150,7 @@ export function LoanFromReservationForm() {
             </button>
             <button
               type="button"
-              onClick={() => { setSelected(null); setMember(null); setError(""); }}
+              onClick={() => { setSelected(null); setError(""); }}
               className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
             >
               Volver

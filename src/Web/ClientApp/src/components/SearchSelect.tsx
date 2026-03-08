@@ -100,9 +100,9 @@ export function SearchSelect<T>({
           )}
           {open && results.length > 0 && (
             <ul className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded shadow-md max-h-48 overflow-y-auto">
-              {results.map((item, i) => (
+              {results.map((item) => (
                 <li
-                  key={i}
+                  key={getOptionValue(item)}
                   onMouseDown={() => handleSelect(item)}
                   className="px-3 py-2 text-sm cursor-pointer hover:bg-blue-50"
                 >

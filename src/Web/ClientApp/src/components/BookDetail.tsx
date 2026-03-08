@@ -2,16 +2,11 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { BookDto, BookCopyDto, BooksClient, ReservationsClient, ReserveBookCommand } from "../web-api-client.ts";
 import { useAuth } from "./api-authorization/AuthContext";
+import { CONDITION_LABELS } from "../constants";
+import { ErrorAlert } from "./ErrorAlert";
 
 const reservationsClient = new ReservationsClient();
 const booksClient = new BooksClient();
-
-const CONDITION_LABELS: Record<number, string> = {
-  0: "Nuevo",
-  1: "Bueno",
-  2: "Regular",
-  3: "Malo",
-};
 
 interface BookDetailProps {
   book: BookDto;
@@ -30,8 +25,10 @@ export function BookDetail({ book }: BookDetailProps) {
     setCopiesLoading(true);
     booksClient.getBookCopies(book.id)
       .then(setCopies)
+      .catch((err) => console.error('Failed to load book copies:', err))
       .finally(() => setCopiesLoading(false));
   }, [isAdmin, book.id]);
+
   const available = (book.availableCopies ?? 0) > 0;
 
   const handleReserve = async () => {
@@ -40,7 +37,8 @@ export function BookDetail({ book }: BookDetailProps) {
     try {
       await reservationsClient.reserveBook(new ReserveBookCommand({ bookId: book.id ?? 0 }));
       navigate("/reservations");
-    } catch {
+    } catch (err) {
+      console.error('Failed to reserve book:', err);
       setError("Error al reservar el libro. Por favor intenta de nuevo.");
       setReserving(false);
     }
@@ -49,7 +47,7 @@ export function BookDetail({ book }: BookDetailProps) {
   return (
     <div className="max-w-xl">
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/")}
         className="text-sm text-blue-600 hover:underline mb-4 inline-block"
       >
         &larr; Volver al catálogo
@@ -87,11 +85,7 @@ export function BookDetail({ book }: BookDetailProps) {
         </dd>
       </dl>
 
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
+      {error && <ErrorAlert message={error} className="mb-4" />}
 
       <div className="flex items-center gap-3">
         <button

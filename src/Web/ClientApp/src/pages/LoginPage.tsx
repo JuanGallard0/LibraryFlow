@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../components/api-authorization/AuthContext";
+import { ErrorAlert } from "../components/ErrorAlert";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
@@ -17,7 +18,8 @@ export function LoginPage() {
       await login(email, password);
       const returnUrl = (location.state as { returnUrl?: string })?.returnUrl ?? "/";
       navigate(isAdmin ? "/" : returnUrl, { replace: true });
-    } catch {
+    } catch (err) {
+      console.error('Login failed:', err);
       setError("Correo o contraseña inválidos.");
     }
   };
@@ -26,11 +28,7 @@ export function LoginPage() {
     <div className="flex justify-center">
       <div className="w-full max-w-sm">
         <h2 className="text-2xl font-semibold mb-4">Iniciar sesión</h2>
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
-        )}
+        {error && <ErrorAlert message={error} className="mb-4" />}
         <form onSubmit={(e) => { e.preventDefault(); void handleSubmit(); }}>
           <div className="mb-4">
             <label

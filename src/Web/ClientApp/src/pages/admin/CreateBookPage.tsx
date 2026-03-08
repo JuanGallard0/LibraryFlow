@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BooksClient, AuthorsClient, CreateBookCommand } from "../../web-api-client.ts";
 import { SearchSelect } from "../../components/SearchSelect";
+import { ErrorAlert } from "../../components/ErrorAlert";
 
 const booksClient = new BooksClient();
 const authorsClient = new AuthorsClient();
@@ -31,7 +32,8 @@ export function CreateBookPage() {
         })
       );
       navigate("/");
-    } catch {
+    } catch (err) {
+      console.error('Failed to create book:', err);
       setError("Error al crear el libro. Por favor verifica los datos e intenta de nuevo.");
       setSubmitting(false);
     }
@@ -105,11 +107,7 @@ export function CreateBookPage() {
           onSelect={setAuthorId}
         />
 
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-            {error}
-          </div>
-        )}
+        {error && <ErrorAlert message={error} />}
 
         <div className="flex items-center gap-4">
           <button

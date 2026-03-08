@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoansClient, BooksClient, MembersClient, CreateLoanCommand } from "../../web-api-client.ts";
 import { SearchSelect } from "../SearchSelect";
+import { ErrorAlert } from "../ErrorAlert";
 
 const loansClient = new LoansClient();
 const booksClient = new BooksClient();
@@ -14,20 +15,22 @@ export function DirectLoanForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setSubmitting(true);
     setError("");
     try {
       await loansClient.createLoan(new CreateLoanCommand({ bookId, memberId }));
       navigate("/admin/loans");
-    } catch {
+    } catch (err) {
+      console.error('Failed to create loan:', err);
       setError("Error al crear el préstamo. Verifica que el libro tenga ejemplares disponibles y que el miembro exista.");
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="max-w-sm space-y-4">
+    <form onSubmit={handleSubmit} className="max-w-sm space-y-4">
       <SearchSelect
         label="Libro"
         placeholder="Buscar por título o autor..."
@@ -46,17 +49,15 @@ export function DirectLoanForm() {
         onSelect={setMemberId}
       />
 
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{error}</div>
-      )}
+      {error && <ErrorAlert message={error} />}
 
       <button
-        onClick={handleSubmit}
+        type="submit"
         disabled={!bookId || !memberId || submitting}
         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
       >
         {submitting ? "Creando préstamo..." : "Crear Préstamo"}
       </button>
-    </div>
+    </form>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../components/api-authorization/AuthContext";
+import { ErrorAlert } from "../components/ErrorAlert";
 
 export function RegisterPage() {
   const [firstName, setFirstName] = useState("");
@@ -18,7 +19,8 @@ export function RegisterPage() {
     try {
       await register(firstName, lastName, email, password);
       navigate("/login");
-    } catch {
+    } catch (err) {
+      console.error('Failed to register:', err);
       setError("Error al registrarse. Por favor intenta de nuevo.");
     }
   };
@@ -27,11 +29,7 @@ export function RegisterPage() {
     <div className="flex justify-center">
       <div className="w-full max-w-sm">
         <h2 className="text-2xl font-semibold mb-4">Registrarse</h2>
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
-        )}
+        {error && <ErrorAlert message={error} className="mb-4" />}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label

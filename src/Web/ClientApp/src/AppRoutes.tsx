@@ -1,6 +1,7 @@
 import { HomePage } from "./pages/HomePage";
 import { BookPage } from "./pages/BookPage";
 import { ReservationsPage } from "./pages/ReservationsPage";
+import { MyLoansPage } from "./pages/MyLoansPage";
 import { LoanFromReservationPage } from "./pages/admin/LoanFromReservationPage";
 import { LoansPage } from "./pages/admin/LoansPage";
 import { DirectLoanPage } from "./pages/admin/DirectLoanPage";
@@ -33,6 +34,14 @@ const AppRoutes = [
     element: (
       <ProtectedRoute>
         <ReservationsPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/loans",
+    element: (
+      <ProtectedRoute>
+        <MyLoansPage />
       </ProtectedRoute>
     ),
   },

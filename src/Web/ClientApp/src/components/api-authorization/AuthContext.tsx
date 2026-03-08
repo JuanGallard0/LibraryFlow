@@ -11,7 +11,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType>(null!);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const usersClient = new UsersClient();
 const membersClient = new MembersClient();
@@ -22,10 +22,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [roles, setRoles] = useState<string[]>([]);
 
   const fetchRoles = async () => {
-    const res = await fetch('/api/Users/me');
-    if (res.ok) {
-      const data = await res.json();
-      setRoles(data.roles);
+    try {
+      const res = await fetch('/api/Users/me');
+      if (res.ok) {
+        const data = await res.json();
+        setRoles(data.roles);
+      }
+    } catch (e) {
+      console.error('Failed to fetch user roles:', e);
     }
   };
 
@@ -63,4 +67,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
+  return ctx;
+};
