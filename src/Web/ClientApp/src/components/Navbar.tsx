@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./api-authorization/AuthContext";
 
 function NavBarInner() {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -14,14 +14,26 @@ function NavBarInner() {
   return (
     <>
       {isAuthenticated ? (
-        <li>
-          <button
-            className="text-gray-700 hover:text-gray-900 bg-transparent border-0 cursor-pointer px-3 py-2"
-            onClick={handleLogout}
-          >
-            Log out
-          </button>
-        </li>
+        <>
+          {isAdmin && (
+            <li>
+              <Link
+                className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
+                to="/admin/loans"
+              >
+                Loans
+              </Link>
+            </li>
+          )}
+          <li>
+            <button
+              className="text-gray-700 hover:text-gray-900 bg-transparent border-0 cursor-pointer px-3 py-2"
+              onClick={handleLogout}
+            >
+              Log out
+            </button>
+          </li>
+        </>
       ) : (
         <>
           <li>

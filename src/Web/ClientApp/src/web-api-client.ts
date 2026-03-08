@@ -138,6 +138,72 @@ export class BooksClient {
     }
 }
 
+export class LoansClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * Create a loan
+     * @return Created
+     */
+    createLoan(body: CreateLoanCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Loans";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateLoan(_response);
+        });
+    }
+
+    protected processCreateLoan(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result201 = resultData201 !== undefined ? resultData201 : null as any;
+    
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(null as any);
+    }
+}
+
 export class MembersClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -1761,6 +1827,62 @@ export interface ICreateBookCommand {
     genre?: string | undefined;
     publishedYear?: number;
     authorId?: number;
+
+    [key: string]: any;
+}
+
+export class CreateLoanCommand implements ICreateLoanCommand {
+    bookId!: number;
+    memberId!: number;
+    reservationId?: number | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: ICreateLoanCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.bookId = _data["bookId"];
+            this.memberId = _data["memberId"];
+            this.reservationId = _data["reservationId"];
+        }
+    }
+
+    static fromJS(data: any): CreateLoanCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateLoanCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["bookId"] = this.bookId;
+        data["memberId"] = this.memberId;
+        data["reservationId"] = this.reservationId;
+        return data;
+    }
+}
+
+export interface ICreateLoanCommand {
+    bookId: number;
+    memberId: number;
+    reservationId?: number | undefined;
 
     [key: string]: any;
 }

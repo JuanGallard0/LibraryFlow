@@ -1,9 +1,12 @@
 import { HomePage } from "./pages/HomePage";
 import { BookPage } from "./pages/BookPage";
 import { ReservationsPage } from "./pages/ReservationsPage";
+import { LoanFromReservationPage } from "./pages/admin/LoanFromReservationPage";
+import { DirectLoanPage } from "./pages/admin/DirectLoanPage";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { ProtectedRoute } from "./components/api-authorization/ProtectedRoute";
+import { AdminRoute } from "./components/api-authorization/AdminRoute";
 
 const AppRoutes = [
   {
@@ -28,6 +31,22 @@ const AppRoutes = [
       <ProtectedRoute>
         <ReservationsPage />
       </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin/loans",
+    element: (
+      <AdminRoute>
+        <LoanFromReservationPage />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/loans/direct",
+    element: (
+      <AdminRoute>
+        <DirectLoanPage />
+      </AdminRoute>
     ),
   },
   {
