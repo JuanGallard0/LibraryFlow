@@ -7,6 +7,7 @@ namespace LibraryFlow.Application.Members.Queries.GetMembers;
 [Authorize(Roles = Roles.Administrator)]
 public record GetMembersQuery : IRequest<List<MemberDto>>
 {
+    public int? Id { get; init; }
     public string? Search { get; init; }
 }
 
@@ -16,6 +17,7 @@ public class GetMembersQueryHandler(IApplicationDbContext context, IMapper mappe
     public async Task<List<MemberDto>> Handle(GetMembersQuery request, CancellationToken cancellationToken)
     {
         return await context.Members
+            .Where(m => request.Id == null || m.Id == request.Id)
             .Where(m => string.IsNullOrEmpty(request.Search) ||
                         m.FirstName.Contains(request.Search) ||
                         m.LastName.Contains(request.Search) ||

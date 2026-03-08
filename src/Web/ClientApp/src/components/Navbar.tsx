@@ -24,12 +24,30 @@ function NavBarInner() {
               Libros
             </Link>
           </li>
+          {!isAdmin && (
+            <li>
+              <Link
+                className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
+                to="/reservations"
+              >
+                Mis Reservaciones
+              </Link>
+            </li>
+          )}
           {isAdmin && (
             <>
               <li>
                 <Link
                   className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
                   to="/admin/loans"
+                >
+                  Préstamos
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
+                  to="/admin/loans/reservations"
                 >
                   Reservaciones
                 </Link>

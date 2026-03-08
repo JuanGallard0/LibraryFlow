@@ -6,6 +6,7 @@ namespace LibraryFlow.Application.Reservations.Queries.GetUserReservations;
 public class ReservationDto
 {
     public int Id { get; init; }
+    public int MemberId { get; init; }
     public int BookId { get; init; }
     public string BookTitle { get; init; } = string.Empty;
     public string BookISBN { get; init; } = string.Empty;

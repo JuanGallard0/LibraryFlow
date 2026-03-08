@@ -340,6 +340,73 @@ export class LoansClient {
     }
 
     /**
+     * Get all loans
+     * @param memberId (optional) 
+     * @param status (optional) 
+     * @return OK
+     */
+    getLoans(memberId: number | undefined, status: number | undefined): Promise<LoanDto[]> {
+        let url_ = this.baseUrl + "/api/Loans?";
+        if (memberId === null)
+            throw new globalThis.Error("The parameter 'memberId' cannot be null.");
+        else if (memberId !== undefined)
+            url_ += "MemberId=" + encodeURIComponent("" + memberId) + "&";
+        if (status === null)
+            throw new globalThis.Error("The parameter 'status' cannot be null.");
+        else if (status !== undefined)
+            url_ += "Status=" + encodeURIComponent("" + status) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetLoans(_response);
+        });
+    }
+
+    protected processGetLoans(response: Response): Promise<LoanDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(LoanDto.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<LoanDto[]>(null as any);
+    }
+
+    /**
      * Create a loan
      * @return Created
      */
@@ -407,11 +474,16 @@ export class MembersClient {
 
     /**
      * Get all members
+     * @param id (optional) 
      * @param search (optional) 
      * @return OK
      */
-    getMembers(search: string | undefined): Promise<MemberDto[]> {
+    getMembers(id: number | undefined, search: string | undefined): Promise<MemberDto[]> {
         let url_ = this.baseUrl + "/api/Members?";
+        if (id === null)
+            throw new globalThis.Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
         if (search === null)
             throw new globalThis.Error("The parameter 'search' cannot be null.");
         else if (search !== undefined)
@@ -465,6 +537,63 @@ export class MembersClient {
             });
         }
         return Promise.resolve<MemberDto[]>(null as any);
+    }
+
+    /**
+     * Get a member by ID
+     * @return OK
+     */
+    getMember(id: number): Promise<MemberDto> {
+        let url_ = this.baseUrl + "/api/Members/{id}";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetMember(_response);
+        });
+    }
+
+    protected processGetMember(response: Response): Promise<MemberDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MemberDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MemberDto>(null as any);
     }
 
     /**
@@ -2652,6 +2781,90 @@ export interface IInfoResponse {
     [key: string]: any;
 }
 
+export class LoanDto implements ILoanDto {
+    id?: number;
+    memberId?: number;
+    memberName?: string;
+    bookCopyId?: number;
+    copyNumber?: string;
+    bookTitle?: string;
+    borrowedAt?: Date;
+    dueAt?: Date;
+    returnedAt?: Date | undefined;
+    status?: number;
+
+    [key: string]: any;
+
+    constructor(data?: ILoanDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.memberId = _data["memberId"];
+            this.memberName = _data["memberName"];
+            this.bookCopyId = _data["bookCopyId"];
+            this.copyNumber = _data["copyNumber"];
+            this.bookTitle = _data["bookTitle"];
+            this.borrowedAt = _data["borrowedAt"] ? new Date(_data["borrowedAt"].toString()) : undefined as any;
+            this.dueAt = _data["dueAt"] ? new Date(_data["dueAt"].toString()) : undefined as any;
+            this.returnedAt = _data["returnedAt"] ? new Date(_data["returnedAt"].toString()) : undefined as any;
+            this.status = _data["status"];
+        }
+    }
+
+    static fromJS(data: any): LoanDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoanDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["memberId"] = this.memberId;
+        data["memberName"] = this.memberName;
+        data["bookCopyId"] = this.bookCopyId;
+        data["copyNumber"] = this.copyNumber;
+        data["bookTitle"] = this.bookTitle;
+        data["borrowedAt"] = this.borrowedAt ? this.borrowedAt.toISOString() : undefined as any;
+        data["dueAt"] = this.dueAt ? this.dueAt.toISOString() : undefined as any;
+        data["returnedAt"] = this.returnedAt ? this.returnedAt.toISOString() : undefined as any;
+        data["status"] = this.status;
+        return data;
+    }
+}
+
+export interface ILoanDto {
+    id?: number;
+    memberId?: number;
+    memberName?: string;
+    bookCopyId?: number;
+    copyNumber?: string;
+    bookTitle?: string;
+    borrowedAt?: Date;
+    dueAt?: Date;
+    returnedAt?: Date | undefined;
+    status?: number;
+
+    [key: string]: any;
+}
+
 export class LoginRequest implements ILoginRequest {
     email!: string;
     password!: string;
@@ -3200,6 +3413,7 @@ export interface IResendConfirmationEmailRequest {
 
 export class ReservationDto implements IReservationDto {
     id?: number;
+    memberId?: number;
     bookId?: number;
     bookTitle?: string;
     bookISBN?: string;
@@ -3225,6 +3439,7 @@ export class ReservationDto implements IReservationDto {
                     this[property] = _data[property];
             }
             this.id = _data["id"];
+            this.memberId = _data["memberId"];
             this.bookId = _data["bookId"];
             this.bookTitle = _data["bookTitle"];
             this.bookISBN = _data["bookISBN"];
@@ -3248,6 +3463,7 @@ export class ReservationDto implements IReservationDto {
                 data[property] = this[property];
         }
         data["id"] = this.id;
+        data["memberId"] = this.memberId;
         data["bookId"] = this.bookId;
         data["bookTitle"] = this.bookTitle;
         data["bookISBN"] = this.bookISBN;
@@ -3260,6 +3476,7 @@ export class ReservationDto implements IReservationDto {
 
 export interface IReservationDto {
     id?: number;
+    memberId?: number;
     bookId?: number;
     bookTitle?: string;
     bookISBN?: string;

@@ -23,6 +23,8 @@ else
     app.UseHsts();
 }
 
+app.UseExceptionHandler(options => { });
+
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -31,9 +33,6 @@ app.MapOpenApi();
 app.MapScalarApiReference();
 
 app.MapFallbackToFile("index.html");
-
-app.UseExceptionHandler(options => { });
-
 
 app.MapEndpoints();
 

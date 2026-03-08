@@ -40,7 +40,7 @@ export function DirectLoanForm() {
       <SearchSelect
         label="Miembro"
         placeholder="Buscar por nombre o correo..."
-        onSearch={(q) => membersClient.getMembers(q)}
+        onSearch={(q) => membersClient.getMembers(undefined, q)}
         getOptionLabel={(m) => `${m.firstName} ${m.lastName} — ${m.email}`}
         getOptionValue={(m) => m.id!}
         onSelect={setMemberId}

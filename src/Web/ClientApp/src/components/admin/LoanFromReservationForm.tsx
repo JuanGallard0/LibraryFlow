@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ReservationsClient, LoansClient, ReservationDto, CreateLoanCommand } from "../../web-api-client.ts";
+import { ReservationsClient, LoansClient, MembersClient, ReservationDto, MemberDto, CreateLoanCommand } from "../../web-api-client.ts";
 
 const reservationsClient = new ReservationsClient();
 const loansClient = new LoansClient();
+const membersClient = new MembersClient();
 
 // Status 1 = Pending (see ReservationList.tsx)
 const PENDING_STATUS = 1;
@@ -12,7 +13,7 @@ export function LoanFromReservationForm() {
   const navigate = useNavigate();
   const [reservations, setReservations] = useState<ReservationDto[]>([]);
   const [selected, setSelected] = useState<ReservationDto | null>(null);
-  const [memberId, setMemberId] = useState("");
+  const [member, setMember] = useState<MemberDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -26,21 +27,26 @@ export function LoanFromReservationForm() {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    if (!selected?.memberId) { setMember(null); return; }
+    membersClient.getMember(selected.memberId).then(setMember).catch(() => setMember(null));
+  }, [selected]);
+
   const handleSubmit = async () => {
-    if (!selected || !memberId) return;
+    if (!selected) return;
     setSubmitting(true);
     setError("");
     try {
       await loansClient.createLoan(
         new CreateLoanCommand({
           bookId: selected.bookId!,
-          memberId: parseInt(memberId, 10),
+          memberId: selected.memberId!,
           reservationId: selected.id,
         })
       );
       navigate("/admin/loans");
     } catch {
-      setError("Error al crear el préstamo. Verifica que el ID del miembro coincida con la reservación.");
+      setError("Error al crear el préstamo. Por favor intenta de nuevo.");
       setSubmitting(false);
     }
   };
@@ -94,24 +100,16 @@ export function LoanFromReservationForm() {
             <p><span className="font-medium">ID Reservación:</span> {selected.id}</p>
           </div>
 
-          <div>
-            <label htmlFor="memberId" className="block text-sm font-medium text-gray-700 mb-1">
-              ID del Miembro
-            </label>
-            {/* memberId is not returned by the reservations API — the admin must enter it */}
-            <input
-              type="number"
-              id="memberId"
-              min={1}
-              value={memberId}
-              onChange={(e) => setMemberId(e.target.value)}
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Ingresa el ID del miembro"
-              required
-            />
-            <p className="text-xs text-gray-400 mt-1">
-              El ID del miembro debe coincidir con quien hizo la reservación.
-            </p>
+          <div className="bg-gray-50 border rounded p-4 text-sm space-y-1">
+            <p className="font-medium text-gray-700 mb-1">Miembro</p>
+            {member ? (
+              <>
+                <p><span className="font-medium">Nombre:</span> {member.firstName} {member.lastName}</p>
+                <p><span className="font-medium">Correo:</span> {member.email}</p>
+              </>
+            ) : (
+              <p className="text-gray-400">Cargando información del miembro...</p>
+            )}
           </div>
 
           {error && (
@@ -121,14 +119,14 @@ export function LoanFromReservationForm() {
           <div className="flex gap-2">
             <button
               onClick={handleSubmit}
-              disabled={!memberId || submitting}
+              disabled={submitting}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
               {submitting ? "Creando préstamo..." : "Crear Préstamo"}
             </button>
             <button
               type="button"
-              onClick={() => { setSelected(null); setMemberId(""); setError(""); }}
+              onClick={() => { setSelected(null); setMember(null); setError(""); }}
               className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
             >
               Volver

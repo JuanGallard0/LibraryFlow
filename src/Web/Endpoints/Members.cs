@@ -10,6 +10,7 @@ public class Members : EndpointGroupBase
     public override void Map(RouteGroupBuilder groupBuilder)
     {
         groupBuilder.MapGet(GetMembers).RequireAuthorization(p => p.RequireRole(Roles.Administrator));
+        groupBuilder.MapGet(GetMember, "{id}").RequireAuthorization(p => p.RequireRole(Roles.Administrator));
         groupBuilder.MapPost(RegisterMember, "register");
     }
 
@@ -21,6 +22,18 @@ public class Members : EndpointGroupBase
         var result = await sender.Send(query);
 
         return TypedResults.Ok(result);
+    }
+
+    [EndpointName(nameof(GetMember))]
+    [EndpointSummary("Get a member by ID")]
+    [EndpointDescription("Retrieves a single member by their ID. Requires Administrator role.")]
+    public async Task<Results<Ok<MemberDto>, NotFound>> GetMember(ISender sender, int id)
+    {
+        var result = await sender.Send(new GetMembersQuery { Id = id });
+
+        return result.Count == 0
+            ? TypedResults.NotFound()
+            : TypedResults.Ok(result[0]);
     }
 
     [EndpointName(nameof(RegisterMember))]

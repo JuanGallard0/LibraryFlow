@@ -1,4 +1,5 @@
 using LibraryFlow.Application.Loans.Commands.CreateLoan;
+using LibraryFlow.Application.Loans.Queries.GetLoans;
 using LibraryFlow.Domain.Constants;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -8,7 +9,18 @@ public class Loans : EndpointGroupBase
 {
     public override void Map(RouteGroupBuilder groupBuilder)
     {
-        groupBuilder.MapPost(CreateLoan).RequireAuthorization(Roles.Administrator);
+        groupBuilder.MapGet(GetLoans).RequireAuthorization(p => p.RequireRole(Roles.Administrator));
+        groupBuilder.MapPost(CreateLoan).RequireAuthorization(p => p.RequireRole(Roles.Administrator));
+    }
+
+    [EndpointName(nameof(GetLoans))]
+    [EndpointSummary("Get all loans")]
+    [EndpointDescription("Retrieves all loans. Optionally filter by member or status. Requires Administrator role.")]
+    public async Task<Ok<List<LoanDto>>> GetLoans(ISender sender, [AsParameters] GetLoansQuery query)
+    {
+        var result = await sender.Send(query);
+
+        return TypedResults.Ok(result);
     }
 
     [EndpointName(nameof(CreateLoan))]
