@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { BooksClient, BookDto } from "../web-api-client.ts";
 import { BookCard } from "./BookCard";
+import { useAuth } from "./api-authorization/AuthContext";
 
 const client = new BooksClient();
 
 const PAGE_SIZE = 9;
 
 export function BookCatalog() {
+  const { isAdmin } = useAuth();
   const [books, setBooks] = useState<BookDto[]>([]);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
@@ -36,7 +39,17 @@ export function BookCatalog() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-4">Book Catalog</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-semibold">Book Catalog</h1>
+        {isAdmin && (
+          <Link
+            to="/admin/books/new"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+          >
+            + Add Book
+          </Link>
+        )}
+      </div>
 
       <form
         onSubmit={(e) => {

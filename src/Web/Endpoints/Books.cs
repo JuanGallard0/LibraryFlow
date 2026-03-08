@@ -11,7 +11,7 @@ public class Books : EndpointGroupBase
     public override void Map(RouteGroupBuilder groupBuilder)
     {
         groupBuilder.MapGet(GetBooksWithPagination).RequireAuthorization();
-        groupBuilder.MapPost(CreateBook).RequireAuthorization(Roles.Administrator);
+        groupBuilder.MapPost(CreateBook).RequireAuthorization(p => p.RequireRole(Roles.Administrator));
     }
 
     [EndpointName(nameof(GetBooksWithPagination))]

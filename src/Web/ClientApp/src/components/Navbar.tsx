@@ -4,6 +4,7 @@ import { useAuth } from "./api-authorization/AuthContext";
 
 function NavBarInner() {
   const { isAuthenticated, isAdmin, logout } = useAuth();
+
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -15,15 +16,33 @@ function NavBarInner() {
     <>
       {isAuthenticated ? (
         <>
+          <li>
+            <Link
+              className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
+              to="/"
+            >
+              Books
+            </Link>
+          </li>
           {isAdmin && (
-            <li>
-              <Link
-                className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
-                to="/admin/loans"
-              >
-                Loans
-              </Link>
-            </li>
+            <>
+              <li>
+                <Link
+                  className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
+                  to="/admin/loans"
+                >
+                  Reservations
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
+                  to="/admin/loans/direct"
+                >
+                  Direct Loan
+                </Link>
+              </li>
+            </>
           )}
           <li>
             <button
@@ -92,22 +111,6 @@ export function Navbar() {
         <ul
           className={`${collapsed ? "hidden" : "flex"} sm:flex flex-col sm:flex-row sm:items-center gap-1 absolute sm:static top-14 left-0 right-0 bg-white sm:bg-transparent p-4 sm:p-0 border-b sm:border-0 shadow-sm sm:shadow-none z-10`}
         >
-          <li>
-            <Link
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
-              to="/"
-            >
-              Books
-            </Link>
-          </li>
-          <li>
-            <Link
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
-              to="/reservations"
-            >
-              My Reservations
-            </Link>
-          </li>
           <NavBarInner />
         </ul>
       </nav>

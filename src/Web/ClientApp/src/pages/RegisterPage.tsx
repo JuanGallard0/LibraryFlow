@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../components/api-authorization/AuthContext";
 
@@ -11,7 +11,7 @@ export function RegisterPage() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     try {

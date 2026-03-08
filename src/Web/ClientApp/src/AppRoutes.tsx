@@ -3,6 +3,7 @@ import { BookPage } from "./pages/BookPage";
 import { ReservationsPage } from "./pages/ReservationsPage";
 import { LoanFromReservationPage } from "./pages/admin/LoanFromReservationPage";
 import { DirectLoanPage } from "./pages/admin/DirectLoanPage";
+import { CreateBookPage } from "./pages/admin/CreateBookPage";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { ProtectedRoute } from "./components/api-authorization/ProtectedRoute";
@@ -46,6 +47,14 @@ const AppRoutes = [
     element: (
       <AdminRoute>
         <DirectLoanPage />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/books/new",
+    element: (
+      <AdminRoute>
+        <CreateBookPage />
       </AdminRoute>
     ),
   },

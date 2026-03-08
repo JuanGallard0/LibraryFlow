@@ -215,6 +215,68 @@ export class MembersClient {
     }
 
     /**
+     * Get all members
+     * @param search (optional) 
+     * @return OK
+     */
+    getMembers(search: string | undefined): Promise<MemberDto[]> {
+        let url_ = this.baseUrl + "/api/Members?";
+        if (search === null)
+            throw new globalThis.Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetMembers(_response);
+        });
+    }
+
+    protected processGetMembers(response: Response): Promise<MemberDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MemberDto.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MemberDto[]>(null as any);
+    }
+
+    /**
      * Register a new member
      * @return Created
      */
@@ -2335,6 +2397,74 @@ export interface ILookupDto {
     [key: string]: any;
 }
 
+export class MemberDto implements IMemberDto {
+    id?: number;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    memberSince?: Date;
+    status?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IMemberDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.email = _data["email"];
+            this.memberSince = _data["memberSince"] ? new Date(_data["memberSince"].toString()) : undefined as any;
+            this.status = _data["status"];
+        }
+    }
+
+    static fromJS(data: any): MemberDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MemberDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["email"] = this.email;
+        data["memberSince"] = this.memberSince ? formatDate(this.memberSince) : undefined as any;
+        data["status"] = this.status;
+        return data;
+    }
+}
+
+export interface IMemberDto {
+    id?: number;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    memberSince?: Date;
+    status?: number;
+
+    [key: string]: any;
+}
+
 export class PaginatedListOfBookDto implements IPaginatedListOfBookDto {
     items!: BookDto[];
     pageNumber!: number;
@@ -3566,6 +3696,12 @@ export interface IWeatherForecast {
     summary?: string;
 
     [key: string]: any;
+}
+
+function formatDate(d: Date) {
+    return d.getFullYear() + '-' + 
+        (d.getMonth() < 9 ? ('0' + (d.getMonth()+1)) : (d.getMonth()+1)) + '-' +
+        (d.getDate() < 10 ? ('0' + d.getDate()) : d.getDate());
 }
 
 export class SwaggerException extends Error {
