@@ -8,8 +8,6 @@ using LibraryFlow.Application.Common.Models;
 using LibraryFlow.Application.Loans.Queries.GetLoans;
 using LibraryFlow.Application.Members.Queries.GetMembers;
 using LibraryFlow.Application.Reservations.Queries.GetUserReservations;
-using LibraryFlow.Application.TodoItems.Queries.GetTodoItemsWithPagination;
-using LibraryFlow.Application.TodoLists.Queries.GetTodos;
 using LibraryFlow.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
@@ -42,11 +40,6 @@ public class MappingTests
     }
 
     [Test]
-    [TestCase(typeof(TodoList), typeof(TodoListDto))]
-    [TestCase(typeof(TodoItem), typeof(TodoItemDto))]
-    [TestCase(typeof(TodoList), typeof(LookupDto))]
-    [TestCase(typeof(TodoItem), typeof(LookupDto))]
-    [TestCase(typeof(TodoItem), typeof(TodoItemBriefDto))]
     [TestCase(typeof(Loan), typeof(LoanDto))]
     [TestCase(typeof(Reservation), typeof(ReservationDto))]
     [TestCase(typeof(Book), typeof(BookDto))]

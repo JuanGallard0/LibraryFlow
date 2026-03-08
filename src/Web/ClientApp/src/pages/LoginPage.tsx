@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../components/api-authorization/AuthContext";
 import { ErrorAlert } from "../components/ErrorAlert";
 
@@ -8,16 +8,14 @@ export function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const { login, isAdmin } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleSubmit = async () => {
     setError("");
     try {
       await login(email, password);
-      const returnUrl = (location.state as { returnUrl?: string })?.returnUrl ?? "/";
-      navigate(isAdmin ? "/" : returnUrl, { replace: true });
+      navigate("/", { replace: true });
     } catch (err) {
       console.error('Login failed:', err);
       setError("Correo o contraseña inválidos.");
