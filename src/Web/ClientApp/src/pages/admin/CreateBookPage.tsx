@@ -32,18 +32,18 @@ export function CreateBookPage() {
       );
       navigate("/");
     } catch {
-      setError("Failed to create book. Please check the details and try again.");
+      setError("Error al crear el libro. Por favor verifica los datos e intenta de nuevo.");
       setSubmitting(false);
     }
   };
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-6">Add New Book</h1>
+      <h1 className="text-2xl font-semibold mb-6">Agregar Nuevo Libro</h1>
       <form onSubmit={handleSubmit} className="max-w-sm space-y-4">
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-            Title
+            Título
           </label>
           <input
             type="text"
@@ -71,7 +71,7 @@ export function CreateBookPage() {
 
         <div>
           <label htmlFor="genre" className="block text-sm font-medium text-gray-700 mb-1">
-            Genre <span className="text-gray-400 font-normal">(optional)</span>
+            Género <span className="text-gray-400 font-normal">(opcional)</span>
           </label>
           <input
             type="text"
@@ -84,7 +84,7 @@ export function CreateBookPage() {
 
         <div>
           <label htmlFor="publishedYear" className="block text-sm font-medium text-gray-700 mb-1">
-            Published Year <span className="text-gray-400 font-normal">(optional)</span>
+            Año de Publicación <span className="text-gray-400 font-normal">(opcional)</span>
           </label>
           <input
             type="number"
@@ -97,8 +97,8 @@ export function CreateBookPage() {
         </div>
 
         <SearchSelect
-          label="Author"
-          placeholder="Search by name..."
+          label="Autor"
+          placeholder="Buscar por nombre..."
           onSearch={(q) => authorsClient.getAuthors(q)}
           getOptionLabel={(a) => `${a.firstName} ${a.lastName}`}
           getOptionValue={(a) => a.id!}
@@ -117,14 +117,14 @@ export function CreateBookPage() {
             disabled={!authorId || submitting}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
-            {submitting ? "Creating..." : "Create Book"}
+            {submitting ? "Creando..." : "Crear Libro"}
           </button>
           <button
             type="button"
             onClick={() => navigate("/")}
             className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
           >
-            Cancel
+            Cancelar
           </button>
         </div>
       </form>

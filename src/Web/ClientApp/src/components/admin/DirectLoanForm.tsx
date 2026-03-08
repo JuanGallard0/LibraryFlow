@@ -21,7 +21,7 @@ export function DirectLoanForm() {
       await loansClient.createLoan(new CreateLoanCommand({ bookId, memberId }));
       navigate("/admin/loans");
     } catch {
-      setError("Failed to create loan. Verify the book has available copies and the member exists.");
+      setError("Error al crear el préstamo. Verifica que el libro tenga ejemplares disponibles y que el miembro exista.");
       setSubmitting(false);
     }
   };
@@ -29,17 +29,17 @@ export function DirectLoanForm() {
   return (
     <div className="max-w-sm space-y-4">
       <SearchSelect
-        label="Book"
-        placeholder="Search by title or author..."
+        label="Libro"
+        placeholder="Buscar por título o autor..."
         onSearch={(q) => booksClient.getBooksWithPagination(q, 1, 10).then((r) => r.items)}
-        getOptionLabel={(b) => `${b.title} — ${b.authorName} (${b.availableCopies} available)`}
+        getOptionLabel={(b) => `${b.title} — ${b.authorName} (${b.availableCopies} disponibles)`}
         getOptionValue={(b) => b.id!}
         onSelect={setBookId}
       />
 
       <SearchSelect
-        label="Member"
-        placeholder="Search by name or email..."
+        label="Miembro"
+        placeholder="Buscar por nombre o correo..."
         onSearch={(q) => membersClient.getMembers(q)}
         getOptionLabel={(m) => `${m.firstName} ${m.lastName} — ${m.email}`}
         getOptionValue={(m) => m.id!}
@@ -55,7 +55,7 @@ export function DirectLoanForm() {
         disabled={!bookId || !memberId || submitting}
         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
       >
-        {submitting ? "Creating loan..." : "Create Loan"}
+        {submitting ? "Creando préstamo..." : "Crear Préstamo"}
       </button>
     </div>
   );

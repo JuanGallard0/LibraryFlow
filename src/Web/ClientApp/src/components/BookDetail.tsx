@@ -7,10 +7,10 @@ const reservationsClient = new ReservationsClient();
 const booksClient = new BooksClient();
 
 const CONDITION_LABELS: Record<number, string> = {
-  0: "New",
-  1: "Good",
-  2: "Fair",
-  3: "Poor",
+  0: "Nuevo",
+  1: "Bueno",
+  2: "Regular",
+  3: "Malo",
 };
 
 interface BookDetailProps {
@@ -41,7 +41,7 @@ export function BookDetail({ book }: BookDetailProps) {
       await reservationsClient.reserveBook(new ReserveBookCommand({ bookId: book.id ?? 0 }));
       navigate("/reservations");
     } catch {
-      setError("Failed to reserve the book. Please try again.");
+      setError("Error al reservar el libro. Por favor intenta de nuevo.");
       setReserving(false);
     }
   };
@@ -52,7 +52,7 @@ export function BookDetail({ book }: BookDetailProps) {
         onClick={() => navigate(-1)}
         className="text-sm text-blue-600 hover:underline mb-4 inline-block"
       >
-        &larr; Back to catalog
+        &larr; Volver al catálogo
       </button>
 
       <h1 className="text-2xl font-semibold mb-1">{book.title}</h1>
@@ -67,22 +67,22 @@ export function BookDetail({ book }: BookDetailProps) {
         )}
         {book.genre && (
           <>
-            <dt className="font-medium text-gray-700">Genre</dt>
+            <dt className="font-medium text-gray-700">Género</dt>
             <dd>{book.genre}</dd>
           </>
         )}
         {book.publishedYear && (
           <>
-            <dt className="font-medium text-gray-700">Published</dt>
+            <dt className="font-medium text-gray-700">Publicado</dt>
             <dd>{book.publishedYear}</dd>
           </>
         )}
-        <dt className="font-medium text-gray-700">Availability</dt>
+        <dt className="font-medium text-gray-700">Disponibilidad</dt>
         <dd>
           {available ? (
-            <span className="text-green-600">{book.availableCopies} of {book.totalCopies} available</span>
+            <span className="text-green-600">{book.availableCopies} de {book.totalCopies} disponibles</span>
           ) : (
-            <span className="text-red-500">No copies available</span>
+            <span className="text-red-500">Sin ejemplares disponibles</span>
           )}
         </dd>
       </dl>
@@ -99,7 +99,7 @@ export function BookDetail({ book }: BookDetailProps) {
           disabled={!available || reserving}
           className="px-5 py-2 rounded text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
-          {reserving ? "Reserving..." : "Reserve"}
+          {reserving ? "Reservando..." : "Reservar"}
         </button>
         {isAdmin && (
           <Link
@@ -107,25 +107,25 @@ export function BookDetail({ book }: BookDetailProps) {
             state={{ book }}
             className="px-5 py-2 rounded border border-gray-300 hover:bg-gray-100 text-sm"
           >
-            + Add Copy
+            + Agregar Ejemplar
           </Link>
         )}
       </div>
 
       {isAdmin && (
         <div className="mt-8">
-          <h2 className="text-lg font-semibold mb-3">Copies</h2>
+          <h2 className="text-lg font-semibold mb-3">Ejemplares</h2>
           {copiesLoading ? (
-            <p className="text-sm text-gray-500">Loading...</p>
+            <p className="text-sm text-gray-500">Cargando...</p>
           ) : copies.length === 0 ? (
-            <p className="text-sm text-gray-500">No copies found.</p>
+            <p className="text-sm text-gray-500">No se encontraron ejemplares.</p>
           ) : (
             <table className="w-full text-sm border border-gray-200 rounded overflow-hidden">
               <thead className="bg-gray-50 text-gray-700">
                 <tr>
-                  <th className="text-left px-4 py-2 font-medium">Copy #</th>
-                  <th className="text-left px-4 py-2 font-medium">Condition</th>
-                  <th className="text-left px-4 py-2 font-medium">Status</th>
+                  <th className="text-left px-4 py-2 font-medium">Nº Ejemplar</th>
+                  <th className="text-left px-4 py-2 font-medium">Estado</th>
+                  <th className="text-left px-4 py-2 font-medium">Disponibilidad</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -135,9 +135,9 @@ export function BookDetail({ book }: BookDetailProps) {
                     <td className="px-4 py-2">{CONDITION_LABELS[copy.condition ?? -1] ?? copy.condition}</td>
                     <td className="px-4 py-2">
                       {copy.isAvailable ? (
-                        <span className="text-green-600">Available</span>
+                        <span className="text-green-600">Disponible</span>
                       ) : (
-                        <span className="text-red-500">On loan</span>
+                        <span className="text-red-500">En préstamo</span>
                       )}
                     </td>
                   </tr>

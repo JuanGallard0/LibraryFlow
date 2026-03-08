@@ -21,7 +21,7 @@ function NavBarInner() {
               className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
               to="/"
             >
-              Books
+              Libros
             </Link>
           </li>
           {isAdmin && (
@@ -31,7 +31,7 @@ function NavBarInner() {
                   className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
                   to="/admin/loans"
                 >
-                  Reservations
+                  Reservaciones
                 </Link>
               </li>
               <li>
@@ -39,7 +39,7 @@ function NavBarInner() {
                   className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
                   to="/admin/loans/direct"
                 >
-                  Direct Loan
+                  Préstamo Directo
                 </Link>
               </li>
             </>
@@ -49,7 +49,7 @@ function NavBarInner() {
               className="text-gray-700 hover:text-gray-900 bg-transparent border-0 cursor-pointer px-3 py-2"
               onClick={handleLogout}
             >
-              Log out
+              Cerrar sesión
             </button>
           </li>
         </>
@@ -60,7 +60,7 @@ function NavBarInner() {
               className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
               to="/login"
             >
-              Log in
+              Iniciar sesión
             </Link>
           </li>
           <li>
@@ -68,7 +68,7 @@ function NavBarInner() {
               className="text-gray-700 hover:text-gray-900 px-3 py-2 block"
               to="/register"
             >
-              Register
+              Registrarse
             </Link>
           </li>
         </>

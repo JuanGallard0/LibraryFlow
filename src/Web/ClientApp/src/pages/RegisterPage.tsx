@@ -18,14 +18,14 @@ export function RegisterPage() {
       await register(firstName, lastName, email, password);
       navigate("/login");
     } catch {
-      setError("Registration failed. Please try again.");
+      setError("Error al registrarse. Por favor intenta de nuevo.");
     }
   };
 
   return (
     <div className="flex justify-center">
       <div className="w-full max-w-sm">
-        <h2 className="text-2xl font-semibold mb-4">Register</h2>
+        <h2 className="text-2xl font-semibold mb-4">Registrarse</h2>
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
@@ -37,7 +37,7 @@ export function RegisterPage() {
               htmlFor="firstName"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              First Name
+              Nombre
             </label>
             <input
               type="text"
@@ -53,7 +53,7 @@ export function RegisterPage() {
               htmlFor="lastName"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Last Name
+              Apellido
             </label>
             <input
               type="text"
@@ -69,7 +69,7 @@ export function RegisterPage() {
               htmlFor="email"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Email
+              Correo electrónico
             </label>
             <input
               type="email"
@@ -85,7 +85,7 @@ export function RegisterPage() {
               htmlFor="password"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Password
+              Contraseña
             </label>
             <input
               type="password"
@@ -101,10 +101,10 @@ export function RegisterPage() {
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              Register
+              Registrarse
             </button>
             <Link className="text-blue-600 hover:underline" to="/login">
-              Log in
+              Iniciar sesión
             </Link>
           </div>
         </form>

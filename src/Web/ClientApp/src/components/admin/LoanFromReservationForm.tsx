@@ -22,7 +22,7 @@ export function LoanFromReservationForm() {
     reservationsClient
       .getAllReservations()
       .then((data) => setReservations(data.filter((r) => r.status === PENDING_STATUS)))
-      .catch(() => setFetchError("Failed to load reservations."))
+      .catch(() => setFetchError("Error al cargar las reservaciones."))
       .finally(() => setLoading(false));
   }, []);
 
@@ -40,29 +40,29 @@ export function LoanFromReservationForm() {
       );
       navigate("/admin/loans");
     } catch {
-      setError("Failed to create loan. Check that the member ID matches the reservation.");
+      setError("Error al crear el préstamo. Verifica que el ID del miembro coincida con la reservación.");
       setSubmitting(false);
     }
   };
 
-  if (loading) return <p><em>Loading reservations...</em></p>;
+  if (loading) return <p><em>Cargando reservaciones...</em></p>;
   if (fetchError) return (
     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{fetchError}</div>
   );
-  if (reservations.length === 0) return <p className="text-gray-500">No pending reservations.</p>;
+  if (reservations.length === 0) return <p className="text-gray-500">No hay reservaciones pendientes.</p>;
 
   return (
     <div className="space-y-6">
       {!selected ? (
         <>
-          <p className="text-sm text-gray-600">Select a pending reservation to fulfill:</p>
+          <p className="text-sm text-gray-600">Selecciona una reservación pendiente para completar:</p>
           <table className="w-full border-collapse text-left text-sm">
             <thead>
               <tr className="border-b bg-gray-50">
-                <th className="px-4 py-2 font-semibold text-gray-700">Book</th>
+                <th className="px-4 py-2 font-semibold text-gray-700">Libro</th>
                 <th className="px-4 py-2 font-semibold text-gray-700">ISBN</th>
-                <th className="px-4 py-2 font-semibold text-gray-700">Reserved</th>
-                <th className="px-4 py-2 font-semibold text-gray-700">Expires</th>
+                <th className="px-4 py-2 font-semibold text-gray-700">Reservado</th>
+                <th className="px-4 py-2 font-semibold text-gray-700">Vence</th>
                 <th className="px-4 py-2"></th>
               </tr>
             </thead>
@@ -78,7 +78,7 @@ export function LoanFromReservationForm() {
                       onClick={() => setSelected(r)}
                       className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
                     >
-                      Select
+                      Seleccionar
                     </button>
                   </td>
                 </tr>
@@ -89,14 +89,14 @@ export function LoanFromReservationForm() {
       ) : (
         <div className="max-w-sm space-y-4">
           <div className="bg-gray-50 border rounded p-4 text-sm space-y-1">
-            <p><span className="font-medium">Book:</span> {selected.bookTitle}</p>
+            <p><span className="font-medium">Libro:</span> {selected.bookTitle}</p>
             <p><span className="font-medium">ISBN:</span> {selected.bookISBN}</p>
-            <p><span className="font-medium">Reservation ID:</span> {selected.id}</p>
+            <p><span className="font-medium">ID Reservación:</span> {selected.id}</p>
           </div>
 
           <div>
             <label htmlFor="memberId" className="block text-sm font-medium text-gray-700 mb-1">
-              Member ID
+              ID del Miembro
             </label>
             {/* memberId is not returned by the reservations API — the admin must enter it */}
             <input
@@ -106,11 +106,11 @@ export function LoanFromReservationForm() {
               value={memberId}
               onChange={(e) => setMemberId(e.target.value)}
               className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter member ID"
+              placeholder="Ingresa el ID del miembro"
               required
             />
             <p className="text-xs text-gray-400 mt-1">
-              The member ID must match the one who made the reservation.
+              El ID del miembro debe coincidir con quien hizo la reservación.
             </p>
           </div>
 
@@ -124,14 +124,14 @@ export function LoanFromReservationForm() {
               disabled={!memberId || submitting}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
-              {submitting ? "Creating loan..." : "Create Loan"}
+              {submitting ? "Creando préstamo..." : "Crear Préstamo"}
             </button>
             <button
               type="button"
               onClick={() => { setSelected(null); setMemberId(""); setError(""); }}
               className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
             >
-              Back
+              Volver
             </button>
           </div>
         </div>

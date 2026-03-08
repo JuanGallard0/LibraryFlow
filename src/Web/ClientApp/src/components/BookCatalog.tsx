@@ -27,7 +27,7 @@ export function BookCatalog() {
         setBooks(data.items);
         setTotalPages(data.totalPages ?? 1);
       })
-      .catch(() => setError("Failed to load books."))
+      .catch(() => setError("Error al cargar los libros."))
       .finally(() => setLoading(false));
   }, [query, page]);
 
@@ -40,13 +40,13 @@ export function BookCatalog() {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-semibold">Book Catalog</h1>
+        <h1 className="text-2xl font-semibold">Catálogo de Libros</h1>
         {isAdmin && (
           <Link
             to="/admin/books/new"
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
           >
-            + Add Book
+            + Agregar Libro
           </Link>
         )}
       </div>
@@ -61,7 +61,7 @@ export function BookCatalog() {
       >
         <input
           type="text"
-          placeholder="Search by title or author..."
+          placeholder="Buscar por título o autor..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -70,7 +70,7 @@ export function BookCatalog() {
           type="submit"
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
-          Search
+          Buscar
         </button>
         {query && (
           <button
@@ -78,7 +78,7 @@ export function BookCatalog() {
             onClick={handleClear}
             className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
           >
-            Clear
+            Limpiar
           </button>
         )}
       </form>
@@ -91,10 +91,10 @@ export function BookCatalog() {
 
       {loading ? (
         <p>
-          <em>Loading...</em>
+          <em>Cargando...</em>
         </p>
       ) : books.length === 0 ? (
-        <p className="text-gray-500">No books found.</p>
+        <p className="text-gray-500">No se encontraron libros.</p>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {books.map((book) => (
@@ -110,17 +110,17 @@ export function BookCatalog() {
             disabled={page === 1}
             className="px-3 py-1 border rounded hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            Previous
+            Anterior
           </button>
           <span className="text-sm text-gray-600">
-            Page {page} of {totalPages}
+            Página {page} de {totalPages}
           </span>
           <button
             onClick={() => setPage((p) => p + 1)}
             disabled={page === totalPages}
             className="px-3 py-1 border rounded hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            Next
+            Siguiente
           </button>
         </div>
       )}

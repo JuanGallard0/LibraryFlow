@@ -24,9 +24,9 @@ export function BookCard({ book }: BookCardProps) {
       </div>
       <p className="text-sm mt-auto">
         {available ? (
-          <span className="text-green-600">{book.availableCopies} of {book.totalCopies} available</span>
+          <span className="text-green-600">{book.availableCopies} de {book.totalCopies} disponibles</span>
         ) : (
-          <span className="text-red-500">No copies available</span>
+          <span className="text-red-500">Sin ejemplares disponibles</span>
         )}
       </p>
     </div>

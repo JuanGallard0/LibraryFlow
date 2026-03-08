@@ -80,7 +80,7 @@ export function SearchSelect<T>({
             onClick={handleClear}
             className="text-gray-400 hover:text-gray-600 text-xs"
           >
-            Change
+            Cambiar
           </button>
         </div>
       ) : (
@@ -95,7 +95,7 @@ export function SearchSelect<T>({
           />
           {loading && (
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">
-              Loading...
+              Cargando...
             </span>
           )}
           {open && results.length > 0 && (
@@ -113,7 +113,7 @@ export function SearchSelect<T>({
           )}
           {open && !loading && results.length === 0 && query.trim() && (
             <div className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded shadow-md px-3 py-2 text-sm text-gray-500">
-              No results found
+              Sin resultados
             </div>
           )}
         </div>

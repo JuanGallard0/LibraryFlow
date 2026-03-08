@@ -9,10 +9,10 @@ interface StatusLabel {
 }
 
 const STATUS_LABELS: Record<number, StatusLabel> = {
-  1: { label: "Pending", className: "text-yellow-600" },
-  2: { label: "Fulfilled", className: "text-green-600" },
-  3: { label: "Cancelled", className: "text-red-500" },
-  4: { label: "Expired", className: "text-orange-500" },
+  1: { label: "Pendiente", className: "text-yellow-600" },
+  2: { label: "Completada", className: "text-green-600" },
+  3: { label: "Cancelada", className: "text-red-500" },
+  4: { label: "Vencida", className: "text-orange-500" },
 };
 
 export function ReservationList() {
@@ -24,14 +24,14 @@ export function ReservationList() {
     client
       .getUserReservations()
       .then(setReservations)
-      .catch(() => setError("Failed to load reservations."))
+      .catch(() => setError("Error al cargar las reservaciones."))
       .finally(() => setLoading(false));
   }, []);
 
   if (loading)
     return (
       <p>
-        <em>Loading...</em>
+        <em>Cargando...</em>
       </p>
     );
   if (error)
@@ -41,23 +41,23 @@ export function ReservationList() {
       </div>
     );
   if (reservations.length === 0)
-    return <p className="text-gray-500">You have no reservations.</p>;
+    return <p className="text-gray-500">No tienes reservaciones.</p>;
 
   return (
     <table className="w-full border-collapse text-left text-sm">
       <thead>
         <tr className="border-b bg-gray-50">
-          <th className="px-4 py-2 font-semibold text-gray-700">Title</th>
+          <th className="px-4 py-2 font-semibold text-gray-700">Título</th>
           <th className="px-4 py-2 font-semibold text-gray-700">ISBN</th>
-          <th className="px-4 py-2 font-semibold text-gray-700">Reserved</th>
-          <th className="px-4 py-2 font-semibold text-gray-700">Expires</th>
-          <th className="px-4 py-2 font-semibold text-gray-700">Status</th>
+          <th className="px-4 py-2 font-semibold text-gray-700">Reservado</th>
+          <th className="px-4 py-2 font-semibold text-gray-700">Vence</th>
+          <th className="px-4 py-2 font-semibold text-gray-700">Estado</th>
         </tr>
       </thead>
       <tbody>
         {reservations.map((r, i) => {
           const status = STATUS_LABELS[r.status ?? -1] ?? {
-            label: "Unknown",
+            label: "Desconocido",
             className: "text-gray-500",
           };
           return (

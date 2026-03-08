@@ -27,19 +27,19 @@ export function AddBookCopyPage() {
       await booksClient.createBookCopy(bookId, new CreateBookCopyRequest({ copyNumber }));
       navigate(`/books/${bookId}`, { state: { book } });
     } catch {
-      setError("Failed to add copy. Please try again.");
+      setError("Error al agregar el ejemplar. Por favor intenta de nuevo.");
       setSubmitting(false);
     }
   };
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-1">Add Book Copy</h1>
+      <h1 className="text-2xl font-semibold mb-1">Agregar Ejemplar</h1>
       {book && <p className="text-gray-600 mb-6">{book.title}</p>}
       <form onSubmit={handleSubmit} className="max-w-sm space-y-4">
         <div>
           <label htmlFor="copyNumber" className="block text-sm font-medium text-gray-700 mb-1">
-            Copy Number
+            Número de Ejemplar
           </label>
           <input
             type="text"
@@ -63,14 +63,14 @@ export function AddBookCopyPage() {
             disabled={submitting}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
-            {submitting ? "Adding..." : "Add Copy"}
+            {submitting ? "Agregando..." : "Agregar Ejemplar"}
           </button>
           <button
             type="button"
             onClick={() => navigate(-1)}
             className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
           >
-            Cancel
+            Cancelar
           </button>
         </div>
       </form>

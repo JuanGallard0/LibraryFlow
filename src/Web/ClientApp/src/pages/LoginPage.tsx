@@ -17,14 +17,14 @@ export function LoginPage() {
       const returnUrl = (location.state as { returnUrl?: string })?.returnUrl ?? "/";
       navigate(returnUrl, { replace: true });
     } catch {
-      setError("Invalid email or password.");
+      setError("Correo o contraseña inválidos.");
     }
   };
 
   return (
     <div className="flex justify-center">
       <div className="w-full max-w-sm">
-        <h2 className="text-2xl font-semibold mb-4">Log in</h2>
+        <h2 className="text-2xl font-semibold mb-4">Iniciar sesión</h2>
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
@@ -36,7 +36,7 @@ export function LoginPage() {
               htmlFor="email"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Email
+              Correo electrónico
             </label>
             <input
               type="email"
@@ -52,7 +52,7 @@ export function LoginPage() {
               htmlFor="password"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Password
+              Contraseña
             </label>
             <input
               type="password"
@@ -68,10 +68,10 @@ export function LoginPage() {
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              Log in
+              Iniciar sesión
             </button>
             <Link className="text-blue-600 hover:underline" to="/register">
-              Register
+              Registrarse
             </Link>
           </div>
         </form>
