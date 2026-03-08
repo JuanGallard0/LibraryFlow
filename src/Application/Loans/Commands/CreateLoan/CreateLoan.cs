@@ -1,4 +1,6 @@
 using LibraryFlow.Application.Common.Interfaces;
+using LibraryFlow.Application.Common.Security;
+using LibraryFlow.Domain.Constants;
 using LibraryFlow.Domain.Entities;
 using LibraryFlow.Domain.Enums;
 using ValidationException = LibraryFlow.Application.Common.Exceptions.ValidationException;
@@ -6,6 +8,7 @@ using ValidationFailure = FluentValidation.Results.ValidationFailure;
 
 namespace LibraryFlow.Application.Loans.Commands.CreateLoan;
 
+[Authorize(Roles = Roles.Administrator)]
 public record CreateLoanCommand(int BookId, int MemberId, int? ReservationId = null) : IRequest<int>;
 
 public class CreateLoanCommandHandler(IApplicationDbContext context) : IRequestHandler<CreateLoanCommand, int>

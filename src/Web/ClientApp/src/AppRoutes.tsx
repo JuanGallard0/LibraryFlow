@@ -4,6 +4,7 @@ import { ReservationsPage } from "./pages/ReservationsPage";
 import { LoanFromReservationPage } from "./pages/admin/LoanFromReservationPage";
 import { DirectLoanPage } from "./pages/admin/DirectLoanPage";
 import { CreateBookPage } from "./pages/admin/CreateBookPage";
+import { AddBookCopyPage } from "./pages/admin/AddBookCopyPage";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { ProtectedRoute } from "./components/api-authorization/ProtectedRoute";
@@ -55,6 +56,14 @@ const AppRoutes = [
     element: (
       <AdminRoute>
         <CreateBookPage />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/books/:id/copies/new",
+    element: (
+      <AdminRoute>
+        <AddBookCopyPage />
       </AdminRoute>
     ),
   },

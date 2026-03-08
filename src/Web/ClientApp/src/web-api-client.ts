@@ -7,6 +7,79 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
+export class AuthorsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * Get all authors
+     * @param search (optional) 
+     * @return OK
+     */
+    getAuthors(search: string | undefined): Promise<AuthorDto[]> {
+        let url_ = this.baseUrl + "/api/Authors?";
+        if (search === null)
+            throw new globalThis.Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAuthors(_response);
+        });
+    }
+
+    protected processGetAuthors(response: Response): Promise<AuthorDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AuthorDto.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AuthorDto[]>(null as any);
+    }
+}
+
 export class BooksClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -107,6 +180,124 @@ export class BooksClient {
     }
 
     protected processCreateBook(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result201 = resultData201 !== undefined ? resultData201 : null as any;
+    
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(null as any);
+    }
+
+    /**
+     * Get copies of a book
+     * @return OK
+     */
+    getBookCopies(bookId: number): Promise<BookCopyDto[]> {
+        let url_ = this.baseUrl + "/api/Books/{bookId}/copies";
+        if (bookId === undefined || bookId === null)
+            throw new globalThis.Error("The parameter 'bookId' must be defined.");
+        url_ = url_.replace("{bookId}", encodeURIComponent("" + bookId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetBookCopies(_response);
+        });
+    }
+
+    protected processGetBookCopies(response: Response): Promise<BookCopyDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(BookCopyDto.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<BookCopyDto[]>(null as any);
+    }
+
+    /**
+     * Add a copy to a book
+     * @return Created
+     */
+    createBookCopy(bookId: number, body: CreateBookCopyRequest): Promise<number> {
+        let url_ = this.baseUrl + "/api/Books/{bookId}/copies";
+        if (bookId === undefined || bookId === null)
+            throw new globalThis.Error("The parameter 'bookId' must be defined.");
+        url_ = url_.replace("{bookId}", encodeURIComponent("" + bookId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateBookCopy(_response);
+        });
+    }
+
+    protected processCreateBookCopy(response: Response): Promise<number> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -1753,6 +1944,130 @@ export interface IAccessTokenResponse {
     [key: string]: any;
 }
 
+export class AuthorDto implements IAuthorDto {
+    id?: number;
+    firstName?: string;
+    lastName?: string;
+    bio?: string | undefined;
+    bookCount?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IAuthorDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.bio = _data["bio"];
+            this.bookCount = _data["bookCount"];
+        }
+    }
+
+    static fromJS(data: any): AuthorDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuthorDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["bio"] = this.bio;
+        data["bookCount"] = this.bookCount;
+        return data;
+    }
+}
+
+export interface IAuthorDto {
+    id?: number;
+    firstName?: string;
+    lastName?: string;
+    bio?: string | undefined;
+    bookCount?: number;
+
+    [key: string]: any;
+}
+
+export class BookCopyDto implements IBookCopyDto {
+    id?: number;
+    copyNumber?: string;
+    condition?: number;
+    isAvailable?: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IBookCopyDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.copyNumber = _data["copyNumber"];
+            this.condition = _data["condition"];
+            this.isAvailable = _data["isAvailable"];
+        }
+    }
+
+    static fromJS(data: any): BookCopyDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BookCopyDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["copyNumber"] = this.copyNumber;
+        data["condition"] = this.condition;
+        data["isAvailable"] = this.isAvailable;
+        return data;
+    }
+}
+
+export interface IBookCopyDto {
+    id?: number;
+    copyNumber?: string;
+    condition?: number;
+    isAvailable?: boolean;
+
+    [key: string]: any;
+}
+
 export class BookDto implements IBookDto {
     id?: number;
     title?: string;
@@ -1889,6 +2204,58 @@ export interface ICreateBookCommand {
     genre?: string | undefined;
     publishedYear?: number;
     authorId?: number;
+
+    [key: string]: any;
+}
+
+export class CreateBookCopyRequest implements ICreateBookCopyRequest {
+    copyNumber!: string;
+    condition!: number;
+
+    [key: string]: any;
+
+    constructor(data?: ICreateBookCopyRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.copyNumber = _data["copyNumber"];
+            this.condition = _data["condition"];
+        }
+    }
+
+    static fromJS(data: any): CreateBookCopyRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateBookCopyRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["copyNumber"] = this.copyNumber;
+        data["condition"] = this.condition;
+        return data;
+    }
+}
+
+export interface ICreateBookCopyRequest {
+    copyNumber: string;
+    condition: number;
 
     [key: string]: any;
 }

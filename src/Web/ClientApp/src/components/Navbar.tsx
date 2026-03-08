@@ -87,7 +87,7 @@ export function Navbar() {
           to="/"
           className="text-lg font-semibold text-gray-900 whitespace-nowrap"
         >
-          LibraryFlow.Web
+          LibraryFlow
         </Link>
         <button
           className="sm:hidden p-2 text-gray-600 hover:text-gray-900"
