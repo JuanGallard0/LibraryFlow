@@ -1,7 +1,13 @@
 ﻿using System.Runtime.CompilerServices;
 using AutoMapper;
+using LibraryFlow.Application.Authors.Queries.GetAuthors;
+using LibraryFlow.Application.BookCopies.Queries.GetBookCopies;
+using LibraryFlow.Application.Books.Queries.GetBooksWithPagination;
 using LibraryFlow.Application.Common.Interfaces;
 using LibraryFlow.Application.Common.Models;
+using LibraryFlow.Application.Loans.Queries.GetLoans;
+using LibraryFlow.Application.Members.Queries.GetMembers;
+using LibraryFlow.Application.Reservations.Queries.GetUserReservations;
 using LibraryFlow.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 using LibraryFlow.Application.TodoLists.Queries.GetTodos;
 using LibraryFlow.Domain.Entities;
@@ -41,6 +47,12 @@ public class MappingTests
     [TestCase(typeof(TodoList), typeof(LookupDto))]
     [TestCase(typeof(TodoItem), typeof(LookupDto))]
     [TestCase(typeof(TodoItem), typeof(TodoItemBriefDto))]
+    [TestCase(typeof(Loan), typeof(LoanDto))]
+    [TestCase(typeof(Reservation), typeof(ReservationDto))]
+    [TestCase(typeof(Book), typeof(BookDto))]
+    [TestCase(typeof(Member), typeof(MemberDto))]
+    [TestCase(typeof(Author), typeof(AuthorDto))]
+    [TestCase(typeof(BookCopy), typeof(BookCopyDto))]
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {
         var instance = GetInstanceOf(source);
