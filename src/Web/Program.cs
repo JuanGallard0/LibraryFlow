@@ -13,11 +13,13 @@ builder.AddWebServices();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Skip DB init during build-time OpenAPI doc generation (SKIP_DB_INIT set in Dockerfile build stage)
+if (Environment.GetEnvironmentVariable("SKIP_DB_INIT") != "true")
 {
     await app.InitialiseDatabaseAsync();
 }
-else
+
+if (!app.Environment.IsDevelopment())
 {
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();

@@ -1,0 +1,13 @@
+**/.git
+**/.vs
+**/.idea
+**/bin
+**/obj
+**/artifacts
+**/node_modules
+src/Web/ClientApp/build
+src/Web/LibraryFlow.db
+**/*.user
+**/*.suo
+.dockerignore
+docker-compose.yml
