@@ -18,6 +18,13 @@ public class CustomExceptionHandler : IExceptionHandler
                 { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
                 { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
                 { typeof(BadHttpRequestException), HandleBadHttpRequestException },
+                { typeof(InvalidOperationException), HandleInvalidOperationException },
+                { typeof(ArgumentException), HandleArgumentException },
+                { typeof(ArgumentNullException), HandleArgumentException },
+                { typeof(NotImplementedException), HandleNotImplementedException },
+                { typeof(TimeoutException), HandleTimeoutException },
+                { typeof(OperationCanceledException), HandleOperationCanceledException },
+                { typeof(TaskCanceledException), HandleOperationCanceledException },
             };
     }
 
@@ -25,13 +32,14 @@ public class CustomExceptionHandler : IExceptionHandler
     {
         var exceptionType = exception.GetType();
 
-        if (_exceptionHandlers.ContainsKey(exceptionType))
+        if (_exceptionHandlers.TryGetValue(exceptionType, out var handler))
         {
-            await _exceptionHandlers[exceptionType].Invoke(httpContext, exception);
+            await handler.Invoke(httpContext, exception);
             return true;
         }
 
-        return false;
+        await HandleUnknownException(httpContext, exception);
+        return true;
     }
 
     private async Task HandleValidationException(HttpContext httpContext, Exception ex)
@@ -98,6 +106,81 @@ public class CustomExceptionHandler : IExceptionHandler
             Title = "Bad Request",
             Detail = exception.Message,
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
+        });
+    }
+
+    private async Task HandleInvalidOperationException(HttpContext httpContext, Exception ex)
+    {
+        httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
+
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+        {
+            Status = StatusCodes.Status409Conflict,
+            Title = "Conflict",
+            Detail = ex.Message,
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.8"
+        });
+    }
+
+    private async Task HandleArgumentException(HttpContext httpContext, Exception ex)
+    {
+        httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+        {
+            Status = StatusCodes.Status400BadRequest,
+            Title = "Bad Request",
+            Detail = ex.Message,
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
+        });
+    }
+
+    private async Task HandleNotImplementedException(HttpContext httpContext, Exception ex)
+    {
+        httpContext.Response.StatusCode = StatusCodes.Status501NotImplemented;
+
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+        {
+            Status = StatusCodes.Status501NotImplemented,
+            Title = "Not Implemented",
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.6.2"
+        });
+    }
+
+    private async Task HandleTimeoutException(HttpContext httpContext, Exception ex)
+    {
+        httpContext.Response.StatusCode = StatusCodes.Status504GatewayTimeout;
+
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+        {
+            Status = StatusCodes.Status504GatewayTimeout,
+            Title = "Gateway Timeout",
+            Detail = ex.Message,
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.6.5"
+        });
+    }
+
+    private async Task HandleOperationCanceledException(HttpContext httpContext, Exception ex)
+    {
+        httpContext.Response.StatusCode = StatusCodes.Status499ClientClosedRequest;
+
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+        {
+            Status = StatusCodes.Status499ClientClosedRequest,
+            Title = "Request Cancelled",
+            Detail = ex.Message,
+        });
+    }
+
+    private async Task HandleUnknownException(HttpContext httpContext, Exception ex)
+    {
+        httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+        {
+            Status = StatusCodes.Status500InternalServerError,
+            Title = "An unexpected error occurred.",
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1"
         });
     }
 }
