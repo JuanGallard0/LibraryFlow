@@ -10,6 +10,7 @@ public abstract class IntegrationTestBase
 
     private static readonly string ConnectionString = new ConfigurationBuilder()
         .AddJsonFile("appsettings.json")
+        .AddEnvironmentVariables()
         .Build()
         .GetConnectionString("LibraryFlowDb")!;
 
