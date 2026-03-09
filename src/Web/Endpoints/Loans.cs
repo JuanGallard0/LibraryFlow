@@ -1,5 +1,6 @@
 using LibraryFlow.Application.Common.Interfaces;
 using LibraryFlow.Application.Loans.Commands.CreateLoan;
+using LibraryFlow.Application.Loans.Commands.ReturnBook;
 using LibraryFlow.Application.Loans.Queries.GetLoans;
 using LibraryFlow.Application.Loans.Queries.GetUserLoans;
 using LibraryFlow.Domain.Constants;
@@ -14,6 +15,7 @@ public class Loans : EndpointGroupBase
         groupBuilder.MapGet(GetLoans).RequireAuthorization(p => p.RequireRole(Roles.Administrator));
         groupBuilder.MapGet(GetMyLoans, "me").RequireAuthorization();
         groupBuilder.MapPost(CreateLoan).RequireAuthorization(p => p.RequireRole(Roles.Administrator));
+        groupBuilder.MapPost(ReturnBook, "{id}/return").RequireAuthorization(p => p.RequireRole(Roles.Administrator));
     }
 
     [EndpointName(nameof(GetLoans))]
@@ -44,5 +46,15 @@ public class Loans : EndpointGroupBase
         var id = await sender.Send(command);
 
         return TypedResults.Created($"/api/Loans/{id}", id);
+    }
+
+    [EndpointName(nameof(ReturnBook))]
+    [EndpointSummary("Return a book")]
+    [EndpointDescription("Marks a loan as returned and makes the book copy available again. Requires Administrator role.")]
+    public async Task<NoContent> ReturnBook(ISender sender, int id)
+    {
+        await sender.Send(new ReturnBookCommand(id));
+
+        return TypedResults.NoContent();
     }
 }

@@ -4,7 +4,6 @@ import { ReservationsPage } from "./pages/ReservationsPage";
 import { MyLoansPage } from "./pages/MyLoansPage";
 import { LoanFromReservationPage } from "./pages/admin/LoanFromReservationPage";
 import { LoansPage } from "./pages/admin/LoansPage";
-import { DirectLoanPage } from "./pages/admin/DirectLoanPage";
 import { CreateBookPage } from "./pages/admin/CreateBookPage";
 import { AddBookCopyPage } from "./pages/admin/AddBookCopyPage";
 import { LoginPage } from "./pages/LoginPage";
@@ -58,14 +57,6 @@ const AppRoutes = [
     element: (
       <AdminRoute>
         <LoanFromReservationPage />
-      </AdminRoute>
-    ),
-  },
-  {
-    path: "/admin/loans/direct",
-    element: (
-      <AdminRoute>
-        <DirectLoanPage />
       </AdminRoute>
     ),
   },

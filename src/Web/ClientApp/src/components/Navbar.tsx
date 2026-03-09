@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "./api-authorization/AuthContext";
+import logo from "../../public/favicon.ico";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   isActive
@@ -48,13 +49,11 @@ function NavBarInner() {
                 </NavLink>
               </li>
               <li>
-                <NavLink className={navLinkClass} to="/admin/loans/reservations">
-                  Reservaciones
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className={navLinkClass} to="/admin/loans/direct">
-                  Préstamo Directo
+                <NavLink
+                  className={navLinkClass}
+                  to="/admin/loans/reservations"
+                >
+                  Prestar Libro
                 </NavLink>
               </li>
             </>
@@ -96,13 +95,7 @@ export function Navbar() {
           to="/"
           className="text-lg font-bold text-amber-400 tracking-wide whitespace-nowrap flex items-center gap-2"
         >
-          <svg
-            className="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M6.5 2h11A1.5 1.5 0 0 1 19 3.5v17a1.5 1.5 0 0 1-1.5 1.5H6.5A1.5 1.5 0 0 1 5 20.5v-17A1.5 1.5 0 0 1 6.5 2zM7 4v16h10V4H7zm2 2h6v2H9V6zm0 4h6v2H9v-2z"/>
-          </svg>
+          <img src={logo} alt="LibraryFlow Logo" className="w-5 h-5" />
           LibraryFlow
         </Link>
         <button

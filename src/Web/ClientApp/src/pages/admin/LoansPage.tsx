@@ -11,9 +11,11 @@ export function LoansPage() {
   const [memberMap, setMemberMap] = useState<Record<number, MemberDto>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [returning, setReturning] = useState<number | null>(null);
+  const [showReturned, setShowReturned] = useState(false);
 
-  useEffect(() => {
-    loansClient
+  const loadLoans = () => {
+    return loansClient
       .getLoans(undefined, undefined)
       .then((data) => {
         setLoans(data);
@@ -25,7 +27,11 @@ export function LoansPage() {
             setMemberMap(map);
           })
           .catch((err) => console.error('Failed to load member details:', err));
-      })
+      });
+  };
+
+  useEffect(() => {
+    loadLoans()
       .catch((err) => {
         console.error('Failed to load loans:', err);
         setError("Error al cargar los préstamos.");
@@ -33,9 +39,34 @@ export function LoansPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  const handleReturn = async (loanId: number) => {
+    setReturning(loanId);
+    setError("");
+    try {
+      await loansClient.returnBook(loanId);
+      await loadLoans();
+    } catch (err) {
+      console.error('Failed to return book:', err);
+      setError("Error al registrar la devolución.");
+    } finally {
+      setReturning(null);
+    }
+  };
+
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">Préstamos</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-slate-800">Préstamos</h1>
+        <label className="flex items-center gap-2 text-sm text-stone-600 cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={showReturned}
+            onChange={(e) => setShowReturned(e.target.checked)}
+            className="accent-amber-700"
+          />
+          Mostrar devueltos
+        </label>
+      </div>
 
       {error && <ErrorAlert message={error} className="mb-4" />}
 
@@ -55,11 +86,13 @@ export function LoansPage() {
                 <th className="px-4 py-3 font-semibold text-slate-700">Vence</th>
                 <th className="px-4 py-3 font-semibold text-slate-700">Devuelto</th>
                 <th className="px-4 py-3 font-semibold text-slate-700">Estado</th>
+                <th className="px-4 py-3 font-semibold text-slate-700"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-100">
-              {loans.map((loan) => {
+              {loans.filter((loan) => showReturned || loan.status !== 2).map((loan) => {
                 const member = loan.memberId !== undefined ? memberMap[loan.memberId] : undefined;
+                const isActive = loan.status === 1 || loan.status === 3;
                 return (
                   <tr key={loan.id} className="hover:bg-amber-50 transition-colors">
                     <td className="px-4 py-3">
@@ -77,6 +110,17 @@ export function LoansPage() {
                     <td className="px-4 py-3 text-stone-600">{loan.dueAt ? new Date(loan.dueAt).toLocaleDateString(DATE_LOCALE) : "—"}</td>
                     <td className="px-4 py-3 text-stone-600">{loan.returnedAt ? new Date(loan.returnedAt).toLocaleDateString(DATE_LOCALE) : "—"}</td>
                     <td className="px-4 py-3 text-stone-600">{loan.status !== undefined ? (LOAN_STATUS_LABELS[loan.status] ?? loan.status) : "—"}</td>
+                    <td className="px-4 py-3">
+                      {isActive && (
+                        <button
+                          onClick={() => handleReturn(loan.id!)}
+                          disabled={returning === loan.id}
+                          className="px-3 py-1 text-xs rounded-md border border-stone-300 text-stone-700 hover:bg-stone-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                          {returning === loan.id ? "..." : "Devolver"}
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 );
               })}
