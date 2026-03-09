@@ -3,40 +3,54 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../components/api-authorization/AuthContext";
 import { ErrorAlert } from "../components/ErrorAlert";
 import { SuccessAlert } from "../components/SuccessAlert";
+import logo from "../assets/logo.ico";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
   const { state } = useLocation();
-  const success = (state as { success?: string })?.success;
+  const locationState = state as {
+    success?: string;
+    returnUrl?: string;
+  } | null;
+  const success = locationState?.success;
 
   const handleSubmit = async () => {
     setError("");
+    setSubmitting(true);
     try {
       await login(email, password);
-      navigate("/", { replace: true });
+      navigate(locationState?.returnUrl ?? "/", { replace: true });
     } catch (err) {
-      console.error('Login failed:', err);
+      console.error("Login failed:", err);
       setError("Correo o contraseña inválidos.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
     <div className="flex justify-center pt-8">
       <div className="w-full max-w-sm bg-white border border-stone-200 rounded-xl shadow-sm p-8">
-        <div className="flex justify-center mb-6">
-          <svg className="w-10 h-10 text-amber-600" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M6.5 2h11A1.5 1.5 0 0 1 19 3.5v17a1.5 1.5 0 0 1-1.5 1.5H6.5A1.5 1.5 0 0 1 5 20.5v-17A1.5 1.5 0 0 1 6.5 2zM7 4v16h10V4H7zm2 2h6v2H9V6zm0 4h6v2H9v-2z"/>
-          </svg>
+        <div className="flex justify-center mb-2">
+          <img src={logo} alt="LibraryFlow Logo" className="w-10 h-10" />
         </div>
-        <h2 className="text-2xl font-bold text-slate-800 mb-6 text-center">Iniciar sesión</h2>
+        <h2 className="text-2xl font-bold text-slate-800 mb-6 text-center">
+          Iniciar sesión
+        </h2>
         {success && <SuccessAlert message={success} className="mb-4" />}
         {error && <ErrorAlert message={error} className="mb-4" />}
-        <form onSubmit={(e) => { e.preventDefault(); void handleSubmit(); }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void handleSubmit();
+          }}
+        >
           <div className="mb-4">
             <label
               htmlFor="email"
@@ -80,13 +94,17 @@ export function LoginPage() {
           </div>
           <button
             type="submit"
-            className="w-full px-4 py-2 bg-amber-700 text-white rounded-md hover:bg-amber-800 font-medium transition-colors"
+            disabled={submitting}
+            className="w-full px-4 py-2 bg-amber-700 text-white rounded-md hover:bg-amber-800 disabled:bg-stone-300 disabled:cursor-not-allowed font-medium transition-colors"
           >
-            Iniciar sesión
+            {submitting ? "Iniciando sesión..." : "Iniciar sesión"}
           </button>
           <p className="text-center text-sm text-stone-500 mt-4">
             ¿Sin cuenta?{" "}
-            <Link className="text-amber-700 hover:underline font-medium" to="/register">
+            <Link
+              className="text-amber-700 hover:underline font-medium"
+              to="/register"
+            >
               Registrarse
             </Link>
           </p>

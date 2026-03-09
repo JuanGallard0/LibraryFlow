@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../components/api-authorization/AuthContext";
 import { ErrorAlert } from "../components/ErrorAlert";
+import logo from "../assets/logo.ico";
 
 export function RegisterPage() {
   const [firstName, setFirstName] = useState("");
@@ -18,9 +19,11 @@ export function RegisterPage() {
     setError("");
     try {
       await register(firstName, lastName, email, password);
-      navigate("/login", { state: { success: "Cuenta creada. Por favor inicia sesión." } });
+      navigate("/login", {
+        state: { success: "Cuenta creada. Por favor inicia sesión." },
+      });
     } catch (err) {
-      console.error('Failed to register:', err);
+      console.error("Failed to register:", err);
       setError("Error al registrarse. Por favor intenta de nuevo.");
     }
   };
@@ -28,7 +31,12 @@ export function RegisterPage() {
   return (
     <div className="flex justify-center pt-8">
       <div className="w-full max-w-sm bg-white border border-stone-200 rounded-xl shadow-sm p-8">
-        <h2 className="text-2xl font-bold text-slate-800 mb-6 text-center">Registrarse</h2>
+        <div className="flex justify-center mb-2">
+          <img src={logo} alt="LibraryFlow Logo" className="w-10 h-10" />
+        </div>
+        <h2 className="text-2xl font-bold text-slate-800 mb-6 text-center">
+          Registrarse
+        </h2>
         {error && <ErrorAlert message={error} className="mb-4" />}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -112,7 +120,10 @@ export function RegisterPage() {
           </button>
           <p className="text-center text-sm text-stone-500 mt-4">
             ¿Ya tienes cuenta?{" "}
-            <Link className="text-amber-700 hover:underline font-medium" to="/login">
+            <Link
+              className="text-amber-700 hover:underline font-medium"
+              to="/login"
+            >
               Iniciar sesión
             </Link>
           </p>

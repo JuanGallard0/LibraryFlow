@@ -22,6 +22,7 @@ export function SearchSelect<T>({
   const [selected, setSelected] = useState<T | null>(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [searchError, setSearchError] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -32,15 +33,21 @@ export function SearchSelect<T>({
     if (!query.trim()) {
       setResults([]);
       setOpen(false);
+      setSearchError(false);
       return;
     }
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(async () => {
       setLoading(true);
+      setSearchError(false);
       try {
         const data = await onSearch(query);
         setResults(data);
         setActiveIndex(-1);
+        setOpen(true);
+      } catch {
+        setSearchError(true);
+        setResults([]);
         setOpen(true);
       } finally {
         setLoading(false);
@@ -70,6 +77,7 @@ export function SearchSelect<T>({
     setQuery("");
     setOpen(false);
     setActiveIndex(-1);
+    setSearchError(false);
     onSelect(getOptionValue(item));
   };
 
@@ -78,6 +86,7 @@ export function SearchSelect<T>({
     setQuery("");
     setResults([]);
     setActiveIndex(-1);
+    setSearchError(false);
     onSelect(0);
   };
 
@@ -154,7 +163,12 @@ export function SearchSelect<T>({
               ))}
             </ul>
           )}
-          {open && !loading && results.length === 0 && query.trim() && (
+          {open && !loading && searchError && (
+            <div className="absolute z-20 w-full mt-1 bg-white border border-red-200 rounded-md shadow-md px-3 py-2 text-sm text-red-600">
+              Error al buscar. Intenta de nuevo.
+            </div>
+          )}
+          {open && !loading && !searchError && results.length === 0 && query.trim() && (
             <div className="absolute z-20 w-full mt-1 bg-white border border-stone-200 rounded-md shadow-md px-3 py-2 text-sm text-stone-500">
               Sin resultados
             </div>

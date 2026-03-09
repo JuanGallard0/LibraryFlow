@@ -20,6 +20,17 @@ export function AddBookCopyPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  if (isNaN(bookId) || bookId <= 0) {
+    return (
+      <div>
+        <p className="text-stone-500 mb-4">Libro no encontrado.</p>
+        <button onClick={() => navigate(-1)} className="text-sm text-amber-700 hover:underline">
+          &larr; Volver
+        </button>
+      </div>
+    );
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);

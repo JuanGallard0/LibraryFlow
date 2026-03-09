@@ -128,7 +128,7 @@ export function BookDetail({ book }: BookDetailProps) {
                 {copies.map((copy) => (
                   <tr key={copy.id} className="bg-white">
                     <td className="px-4 py-2 text-stone-700">{copy.copyNumber}</td>
-                    <td className="px-4 py-2 text-stone-700">{CONDITION_LABELS[copy.condition ?? -1] ?? copy.condition}</td>
+                    <td className="px-4 py-2 text-stone-700">{CONDITION_LABELS[copy.condition ?? -1] ?? "Desconocido"}</td>
                     <td className="px-4 py-2">
                       {copy.isAvailable ? (
                         <span className="text-emerald-700 font-medium">Disponible</span>

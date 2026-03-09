@@ -97,7 +97,7 @@ export function LoansPage() {
         </select>
       </div>
 
-      {success && <SuccessAlert message={success} className="mb-4" />}
+      {success && <SuccessAlert message={success} className="mb-4" onDismiss={() => setSuccess("")} />}
       {error && <ErrorAlert message={error} className="mb-4" />}
 
       {loading ? (
