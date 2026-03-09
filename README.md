@@ -121,13 +121,13 @@ El seed crea los siguientes usuarios automáticamente al iniciar la aplicación 
 
 ### Socios
 
-| Email | Contraseña | Estado |
-|---|---|---|
-| lucia@ejemplo.com | Miembro1! | Activo |
-| miguel@ejemplo.com | Miembro1! | Activo |
-| sofia@ejemplo.com | Miembro1! | Suspendido |
-| carlos@ejemplo.com | Miembro1! | Activo |
-| ana@ejemplo.com | Miembro1! | Expirado |
+| Email | Contraseña |
+|---|---|
+| lucia@ejemplo.com | Miembro1! |
+| miguel@ejemplo.com | Miembro1! |
+| sofia@ejemplo.com | Miembro1! |
+| carlos@ejemplo.com | Miembro1! |
+| ana@ejemplo.com | Miembro1! |
 
 ---
 
