@@ -2,8 +2,9 @@ import { HomePage } from "./pages/HomePage";
 import { BookPage } from "./pages/BookPage";
 import { ReservationsPage } from "./pages/ReservationsPage";
 import { MyLoansPage } from "./pages/MyLoansPage";
-import { LoanFromReservationPage } from "./pages/admin/LoanFromReservationPage";
 import { LoansPage } from "./pages/admin/LoansPage";
+import { ReservationsPage as AdminReservationsPage } from "./pages/admin/ReservationsPage";
+import { CreateLoanPage } from "./pages/admin/CreateLoanPage";
 import { CreateBookPage } from "./pages/admin/CreateBookPage";
 import { AddBookCopyPage } from "./pages/admin/AddBookCopyPage";
 import { LoginPage } from "./pages/LoginPage";
@@ -53,10 +54,18 @@ const AppRoutes = [
     ),
   },
   {
-    path: "/admin/loans/reservations",
+    path: "/admin/reservations",
     element: (
       <AdminRoute>
-        <LoanFromReservationPage />
+        <AdminReservationsPage />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/loans/new",
+    element: (
+      <AdminRoute>
+        <CreateLoanPage />
       </AdminRoute>
     ),
   },

@@ -1,7 +1,12 @@
-export const LOAN_STATUS_LABELS: Record<number, string> = {
-  1: "Activo",
-  2: "Devuelto",
-  3: "Vencido",
+export interface LoanStatusLabel {
+  label: string;
+  className: string;
+}
+
+export const LOAN_STATUS_LABELS: Record<number, LoanStatusLabel> = {
+  1: { label: "Activo", className: "text-emerald-700" },
+  2: { label: "Devuelto", className: "text-stone-500" },
+  3: { label: "Vencido", className: "text-red-600" },
 };
 
 export interface ReservationStatusLabel {

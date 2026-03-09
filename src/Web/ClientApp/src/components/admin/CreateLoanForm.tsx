@@ -8,7 +8,7 @@ const loansClient = new LoansClient();
 const booksClient = new BooksClient();
 const membersClient = new MembersClient();
 
-export function DirectLoanForm() {
+export function CreateLoanForm() {
   const navigate = useNavigate();
   const [bookId, setBookId] = useState(0);
   const [memberId, setMemberId] = useState(0);
@@ -36,7 +36,7 @@ export function DirectLoanForm() {
         placeholder="Buscar por título o autor..."
         onSearch={(q) => booksClient.getBooksWithPagination(q, 1, 10).then((r) => r.items)}
         getOptionLabel={(b) => `${b.title} — ${b.authorName} (${b.availableCopies} disponibles)`}
-        getOptionValue={(b) => b.id!}
+        getOptionValue={(b) => b.id ?? 0}
         onSelect={setBookId}
       />
 
@@ -45,7 +45,7 @@ export function DirectLoanForm() {
         placeholder="Buscar por nombre o correo..."
         onSearch={(q) => membersClient.getMembers(undefined, q)}
         getOptionLabel={(m) => `${m.firstName} ${m.lastName} — ${m.email}`}
-        getOptionValue={(m) => m.id!}
+        getOptionValue={(m) => m.id ?? 0}
         onSelect={setMemberId}
       />
 

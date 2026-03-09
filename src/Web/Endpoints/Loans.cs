@@ -1,9 +1,11 @@
 using LibraryFlow.Application.Common.Interfaces;
+using LibraryFlow.Application.Common.Models;
 using LibraryFlow.Application.Loans.Commands.CreateLoan;
 using LibraryFlow.Application.Loans.Commands.ReturnBook;
 using LibraryFlow.Application.Loans.Queries.GetLoans;
 using LibraryFlow.Application.Loans.Queries.GetUserLoans;
 using LibraryFlow.Domain.Constants;
+using LibraryFlow.Domain.Enums;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace LibraryFlow.Web.Endpoints;
@@ -20,8 +22,8 @@ public class Loans : EndpointGroupBase
 
     [EndpointName(nameof(GetLoans))]
     [EndpointSummary("Get all loans")]
-    [EndpointDescription("Retrieves all loans. Optionally filter by member or status. Requires Administrator role.")]
-    public async Task<Ok<List<LoanDto>>> GetLoans(ISender sender, [AsParameters] GetLoansQuery query)
+    [EndpointDescription("Retrieves all loans. Optionally filter by member, status, or search by book title/member name. Requires Administrator role.")]
+    public async Task<Ok<PaginatedList<LoanDto>>> GetLoans(ISender sender, [AsParameters] GetLoansQuery query)
     {
         var result = await sender.Send(query);
 
@@ -30,10 +32,16 @@ public class Loans : EndpointGroupBase
 
     [EndpointName(nameof(GetMyLoans))]
     [EndpointSummary("Get my loans")]
-    [EndpointDescription("Returns all loans for the authenticated member, ordered by most recent first.")]
-    public async Task<Ok<List<LoanDto>>> GetMyLoans(ISender sender, IUser currentUser)
+    [EndpointDescription("Returns paginated loans for the authenticated member. Optionally filter by status.")]
+    public async Task<Ok<PaginatedList<LoanDto>>> GetMyLoans(ISender sender, IUser currentUser, LoanStatus? status, int? pageNumber, int? pageSize)
     {
-        var result = await sender.Send(new GetUserLoansQuery(currentUser.Id!));
+        var result = await sender.Send(new GetUserLoansQuery
+        {
+            UserId = currentUser.Id!,
+            Status = status,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        });
 
         return TypedResults.Ok(result);
     }

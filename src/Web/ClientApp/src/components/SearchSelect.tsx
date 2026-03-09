@@ -22,8 +22,10 @@ export function SearchSelect<T>({
   const [selected, setSelected] = useState<T | null>(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     if (selected) return;
@@ -38,6 +40,7 @@ export function SearchSelect<T>({
       try {
         const data = await onSearch(query);
         setResults(data);
+        setActiveIndex(-1);
         setOpen(true);
       } finally {
         setLoading(false);
@@ -55,10 +58,18 @@ export function SearchSelect<T>({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (activeIndex >= 0 && listRef.current) {
+      const item = listRef.current.children[activeIndex] as HTMLElement | undefined;
+      item?.scrollIntoView({ block: "nearest" });
+    }
+  }, [activeIndex]);
+
   const handleSelect = (item: T) => {
     setSelected(item);
     setQuery("");
     setOpen(false);
+    setActiveIndex(-1);
     onSelect(getOptionValue(item));
   };
 
@@ -66,7 +77,25 @@ export function SearchSelect<T>({
     setSelected(null);
     setQuery("");
     setResults([]);
+    setActiveIndex(-1);
     onSelect(0);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!open || results.length === 0) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIndex((i) => Math.min(i + 1, results.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIndex((i) => Math.max(i - 1, 0));
+    } else if (e.key === "Enter" && activeIndex >= 0) {
+      e.preventDefault();
+      handleSelect(results[activeIndex]);
+    } else if (e.key === "Escape") {
+      setOpen(false);
+      setActiveIndex(-1);
+    }
   };
 
   return (
@@ -90,7 +119,11 @@ export function SearchSelect<T>({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => results.length > 0 && setOpen(true)}
+            onKeyDown={handleKeyDown}
             placeholder={placeholder}
+            aria-autocomplete="list"
+            aria-expanded={open}
+            aria-activedescendant={activeIndex >= 0 ? `option-${activeIndex}` : undefined}
             className="w-full border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white"
           />
           {loading && (
@@ -99,12 +132,22 @@ export function SearchSelect<T>({
             </span>
           )}
           {open && results.length > 0 && (
-            <ul className="absolute z-20 w-full mt-1 bg-white border border-stone-200 rounded-md shadow-md max-h-48 overflow-y-auto">
-              {results.map((item) => (
+            <ul
+              ref={listRef}
+              role="listbox"
+              className="absolute z-20 w-full mt-1 bg-white border border-stone-200 rounded-md shadow-md max-h-48 overflow-y-auto"
+            >
+              {results.map((item, i) => (
                 <li
                   key={getOptionValue(item)}
+                  id={`option-${i}`}
+                  role="option"
+                  aria-selected={i === activeIndex}
                   onMouseDown={() => handleSelect(item)}
-                  className="px-3 py-2 text-sm cursor-pointer hover:bg-amber-50 text-stone-700 transition-colors"
+                  onMouseEnter={() => setActiveIndex(i)}
+                  className={`px-3 py-2 text-sm cursor-pointer text-stone-700 transition-colors ${
+                    i === activeIndex ? "bg-amber-100" : "hover:bg-amber-50"
+                  }`}
                 >
                   {getOptionLabel(item)}
                 </li>

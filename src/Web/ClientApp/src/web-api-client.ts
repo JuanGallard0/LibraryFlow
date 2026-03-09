@@ -343,9 +343,12 @@ export class LoansClient {
      * Get all loans
      * @param memberId (optional) 
      * @param status (optional) 
+     * @param search (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
      * @return OK
      */
-    getLoans(memberId: number | undefined, status: number | undefined): Promise<LoanDto[]> {
+    getLoans(memberId: number | undefined, status: number | undefined, search: string | undefined, pageNumber: number | undefined, pageSize: number | undefined): Promise<PaginatedListOfLoanDto> {
         let url_ = this.baseUrl + "/api/Loans?";
         if (memberId === null)
             throw new globalThis.Error("The parameter 'memberId' cannot be null.");
@@ -355,6 +358,18 @@ export class LoansClient {
             throw new globalThis.Error("The parameter 'status' cannot be null.");
         else if (status !== undefined)
             url_ += "Status=" + encodeURIComponent("" + status) + "&";
+        if (search === null)
+            throw new globalThis.Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        if (pageNumber === null)
+            throw new globalThis.Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new globalThis.Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -369,21 +384,14 @@ export class LoansClient {
         });
     }
 
-    protected processGetLoans(response: Response): Promise<LoanDto[]> {
+    protected processGetLoans(response: Response): Promise<PaginatedListOfLoanDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(LoanDto.fromJS(item));
-            }
-            else {
-                result200 = null as any;
-            }
+            result200 = PaginatedListOfLoanDto.fromJS(resultData200);
             return result200;
             });
         } else if (status === 400) {
@@ -403,7 +411,7 @@ export class LoansClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<LoanDto[]>(null as any);
+        return Promise.resolve<PaginatedListOfLoanDto>(null as any);
     }
 
     /**
@@ -463,10 +471,25 @@ export class LoansClient {
 
     /**
      * Get my loans
+     * @param status (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
      * @return OK
      */
-    getMyLoans(): Promise<LoanDto[]> {
-        let url_ = this.baseUrl + "/api/Loans/me";
+    getMyLoans(status: number | undefined, pageNumber: number | undefined, pageSize: number | undefined): Promise<PaginatedListOfLoanDto> {
+        let url_ = this.baseUrl + "/api/Loans/me?";
+        if (status === null)
+            throw new globalThis.Error("The parameter 'status' cannot be null.");
+        else if (status !== undefined)
+            url_ += "status=" + encodeURIComponent("" + status) + "&";
+        if (pageNumber === null)
+            throw new globalThis.Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new globalThis.Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -481,21 +504,14 @@ export class LoansClient {
         });
     }
 
-    protected processGetMyLoans(response: Response): Promise<LoanDto[]> {
+    protected processGetMyLoans(response: Response): Promise<PaginatedListOfLoanDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(LoanDto.fromJS(item));
-            }
-            else {
-                result200 = null as any;
-            }
+            result200 = PaginatedListOfLoanDto.fromJS(resultData200);
             return result200;
             });
         } else if (status === 400) {
@@ -515,7 +531,7 @@ export class LoansClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<LoanDto[]>(null as any);
+        return Promise.resolve<PaginatedListOfLoanDto>(null as any);
     }
 
     /**
@@ -762,10 +778,25 @@ export class ReservationsClient {
 
     /**
      * Get my reservations
+     * @param status (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
      * @return OK
      */
-    getUserReservations(): Promise<ReservationDto[]> {
-        let url_ = this.baseUrl + "/api/Reservations/me";
+    getUserReservations(status: number | undefined, pageNumber: number | undefined, pageSize: number | undefined): Promise<PaginatedListOfReservationDto> {
+        let url_ = this.baseUrl + "/api/Reservations/me?";
+        if (status === null)
+            throw new globalThis.Error("The parameter 'status' cannot be null.");
+        else if (status !== undefined)
+            url_ += "status=" + encodeURIComponent("" + status) + "&";
+        if (pageNumber === null)
+            throw new globalThis.Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new globalThis.Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -780,21 +811,14 @@ export class ReservationsClient {
         });
     }
 
-    protected processGetUserReservations(response: Response): Promise<ReservationDto[]> {
+    protected processGetUserReservations(response: Response): Promise<PaginatedListOfReservationDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(ReservationDto.fromJS(item));
-            }
-            else {
-                result200 = null as any;
-            }
+            result200 = PaginatedListOfReservationDto.fromJS(resultData200);
             return result200;
             });
         } else if (status === 400) {
@@ -814,15 +838,35 @@ export class ReservationsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ReservationDto[]>(null as any);
+        return Promise.resolve<PaginatedListOfReservationDto>(null as any);
     }
 
     /**
      * Get all reservations
+     * @param status (optional) 
+     * @param search (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
      * @return OK
      */
-    getAllReservations(): Promise<ReservationDto[]> {
-        let url_ = this.baseUrl + "/api/Reservations/all";
+    getAllReservations(status: number | undefined, search: string | undefined, pageNumber: number | undefined, pageSize: number | undefined): Promise<PaginatedListOfReservationDto> {
+        let url_ = this.baseUrl + "/api/Reservations/all?";
+        if (status === null)
+            throw new globalThis.Error("The parameter 'status' cannot be null.");
+        else if (status !== undefined)
+            url_ += "Status=" + encodeURIComponent("" + status) + "&";
+        if (search === null)
+            throw new globalThis.Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        if (pageNumber === null)
+            throw new globalThis.Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new globalThis.Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -837,21 +881,14 @@ export class ReservationsClient {
         });
     }
 
-    protected processGetAllReservations(response: Response): Promise<ReservationDto[]> {
+    protected processGetAllReservations(response: Response): Promise<PaginatedListOfReservationDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(ReservationDto.fromJS(item));
-            }
-            else {
-                result200 = null as any;
-            }
+            result200 = PaginatedListOfReservationDto.fromJS(resultData200);
             return result200;
             });
         } else if (status === 400) {
@@ -871,7 +908,7 @@ export class ReservationsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ReservationDto[]>(null as any);
+        return Promise.resolve<PaginatedListOfReservationDto>(null as any);
     }
 
     /**
@@ -2509,6 +2546,164 @@ export interface IPaginatedListOfBookDto {
     [key: string]: any;
 }
 
+export class PaginatedListOfLoanDto implements IPaginatedListOfLoanDto {
+    items!: LoanDto[];
+    pageNumber!: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IPaginatedListOfLoanDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.items = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(LoanDto.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfLoanDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfLoanDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfLoanDto {
+    items: LoanDto[];
+    pageNumber: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+}
+
+export class PaginatedListOfReservationDto implements IPaginatedListOfReservationDto {
+    items!: ReservationDto[];
+    pageNumber!: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+
+    constructor(data?: IPaginatedListOfReservationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.items = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(ReservationDto.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfReservationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfReservationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfReservationDto {
+    items: ReservationDto[];
+    pageNumber: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+}
+
 export class RefreshRequest implements IRefreshRequest {
     refreshToken!: string;
 
@@ -2720,6 +2915,8 @@ export interface IResendConfirmationEmailRequest {
 export class ReservationDto implements IReservationDto {
     id?: number;
     memberId?: number;
+    memberName?: string;
+    memberEmail?: string;
     bookId?: number;
     bookTitle?: string;
     bookISBN?: string;
@@ -2746,6 +2943,8 @@ export class ReservationDto implements IReservationDto {
             }
             this.id = _data["id"];
             this.memberId = _data["memberId"];
+            this.memberName = _data["memberName"];
+            this.memberEmail = _data["memberEmail"];
             this.bookId = _data["bookId"];
             this.bookTitle = _data["bookTitle"];
             this.bookISBN = _data["bookISBN"];
@@ -2770,6 +2969,8 @@ export class ReservationDto implements IReservationDto {
         }
         data["id"] = this.id;
         data["memberId"] = this.memberId;
+        data["memberName"] = this.memberName;
+        data["memberEmail"] = this.memberEmail;
         data["bookId"] = this.bookId;
         data["bookTitle"] = this.bookTitle;
         data["bookISBN"] = this.bookISBN;
@@ -2783,6 +2984,8 @@ export class ReservationDto implements IReservationDto {
 export interface IReservationDto {
     id?: number;
     memberId?: number;
+    memberName?: string;
+    memberEmail?: string;
     bookId?: number;
     bookTitle?: string;
     bookISBN?: string;

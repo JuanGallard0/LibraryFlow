@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { BookDto } from "../web-api-client.ts";
 
 interface BookCardProps {
@@ -6,13 +6,13 @@ interface BookCardProps {
 }
 
 export function BookCard({ book }: BookCardProps) {
-  const navigate = useNavigate();
   const available = (book.availableCopies ?? 0) > 0;
 
   return (
-    <div
-      onClick={() => navigate(`/books/${book.id}`, { state: { book } })}
-      className="bg-white border border-stone-200 rounded-lg p-5 flex flex-col gap-3 cursor-pointer hover:border-amber-400 hover:shadow-md transition-all"
+    <Link
+      to={`/books/${book.id}`}
+      state={{ book }}
+      className="bg-white border border-stone-200 rounded-lg p-5 flex flex-col gap-3 hover:border-amber-400 hover:shadow-md transition-all"
     >
       <div>
         <h2 className="font-semibold text-lg text-slate-800 leading-snug">{book.title}</h2>
@@ -31,6 +31,6 @@ export function BookCard({ book }: BookCardProps) {
           <span className="text-red-500">Sin ejemplares disponibles</span>
         )}
       </p>
-    </div>
+    </Link>
   );
 }

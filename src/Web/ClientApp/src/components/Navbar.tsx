@@ -49,10 +49,12 @@ function NavBarInner() {
                 </NavLink>
               </li>
               <li>
-                <NavLink
-                  className={navLinkClass}
-                  to="/admin/loans/reservations"
-                >
+                <NavLink className={navLinkClass} to="/admin/reservations">
+                  Reservaciones
+                </NavLink>
+              </li>
+              <li>
+                <NavLink className={navLinkClass} to="/admin/loans/new">
                   Prestar Libro
                 </NavLink>
               </li>
