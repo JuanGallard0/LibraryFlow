@@ -21,7 +21,7 @@ export function DirectLoanForm() {
     setError("");
     try {
       await loansClient.createLoan(new CreateLoanCommand({ bookId, memberId }));
-      navigate("/admin/loans");
+      navigate("/admin/loans", { state: { success: "Préstamo creado exitosamente." } });
     } catch (err) {
       console.error('Failed to create loan:', err);
       setError("Error al crear el préstamo. Verifica que el libro tenga ejemplares disponibles y que el miembro exista.");

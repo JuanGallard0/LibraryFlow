@@ -26,7 +26,7 @@ export function AddBookCopyPage() {
     setError("");
     try {
       await booksClient.createBookCopy(bookId, new CreateBookCopyRequest({ copyNumber }));
-      navigate(`/books/${bookId}`, { state: { book } });
+      navigate(`/books/${bookId}`, { state: { book, success: "Ejemplar agregado exitosamente." } });
     } catch (err) {
       console.error('Failed to add book copy:', err);
       setError("Error al agregar el ejemplar. Por favor intenta de nuevo.");

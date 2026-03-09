@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import {
   LoansClient,
   MembersClient,
@@ -7,15 +8,18 @@ import {
 } from "../../web-api-client.ts";
 import { LOAN_STATUS_LABELS, DATE_LOCALE } from "../../constants";
 import { ErrorAlert } from "../../components/ErrorAlert";
+import { SuccessAlert } from "../../components/SuccessAlert";
 
 const loansClient = new LoansClient();
 const membersClient = new MembersClient();
 
 export function LoansPage() {
+  const { state } = useLocation();
   const [loans, setLoans] = useState<LoanDto[]>([]);
   const [memberMap, setMemberMap] = useState<Record<number, MemberDto>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState((state as { success?: string })?.success ?? "");
   const [returning, setReturning] = useState<number | null>(null);
   const [showReturned, setShowReturned] = useState(false);
 
@@ -53,9 +57,11 @@ export function LoansPage() {
   const handleReturn = async (loanId: number) => {
     setReturning(loanId);
     setError("");
+    setSuccess("");
     try {
       await loansClient.returnBook(loanId);
       await loadLoans();
+      setSuccess("Devolución registrada exitosamente.");
     } catch (err) {
       console.error("Failed to return book:", err);
       setError("Error al registrar la devolución.");
@@ -79,6 +85,7 @@ export function LoansPage() {
         </label>
       </div>
 
+      {success && <SuccessAlert message={success} className="mb-4" />}
       {error && <ErrorAlert message={error} className="mb-4" />}
 
       {loading ? (

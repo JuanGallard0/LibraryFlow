@@ -18,7 +18,7 @@ export function RegisterPage() {
     setError("");
     try {
       await register(firstName, lastName, email, password);
-      navigate("/login");
+      navigate("/login", { state: { success: "Cuenta creada. Por favor inicia sesión." } });
     } catch (err) {
       console.error('Failed to register:', err);
       setError("Error al registrarse. Por favor intenta de nuevo.");

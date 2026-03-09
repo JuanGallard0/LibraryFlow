@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "./api-authorization/AuthContext";
-import logo from "../../public/favicon.ico";
+import logo from "../assets/logo.ico";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   isActive

@@ -31,7 +31,7 @@ export function CreateBookPage() {
           authorId,
         })
       );
-      navigate("/");
+      navigate("/", { state: { success: "Libro creado exitosamente." } });
     } catch (err) {
       console.error('Failed to create book:', err);
       setError("Error al crear el libro. Por favor verifica los datos e intenta de nuevo.");

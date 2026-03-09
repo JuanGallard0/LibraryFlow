@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../components/api-authorization/AuthContext";
 import { ErrorAlert } from "../components/ErrorAlert";
+import { SuccessAlert } from "../components/SuccessAlert";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
@@ -10,6 +11,8 @@ export function LoginPage() {
   const [error, setError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const success = (state as { success?: string })?.success;
 
   const handleSubmit = async () => {
     setError("");
@@ -31,6 +34,7 @@ export function LoginPage() {
           </svg>
         </div>
         <h2 className="text-2xl font-bold text-slate-800 mb-6 text-center">Iniciar sesión</h2>
+        {success && <SuccessAlert message={success} className="mb-4" />}
         {error && <ErrorAlert message={error} className="mb-4" />}
         <form onSubmit={(e) => { e.preventDefault(); void handleSubmit(); }}>
           <div className="mb-4">

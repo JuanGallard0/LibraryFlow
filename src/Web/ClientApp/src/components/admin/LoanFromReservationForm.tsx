@@ -54,7 +54,7 @@ export function LoanFromReservationForm() {
           reservationId: selected.id,
         })
       );
-      navigate("/admin/loans");
+      navigate("/admin/loans", { state: { success: "Préstamo creado exitosamente." } });
     } catch (err) {
       console.error('Failed to create loan from reservation:', err);
       setError("Error al crear el préstamo. Por favor intenta de nuevo.");
