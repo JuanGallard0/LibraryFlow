@@ -25,7 +25,7 @@ export function LoginPage() {
     setSubmitting(true);
     try {
       await login(email, password);
-      navigate(locationState?.returnUrl ?? "/", { replace: true });
+      navigate("/", { replace: true });
     } catch (err) {
       console.error("Login failed:", err);
       setError("Correo o contraseña inválidos.");
