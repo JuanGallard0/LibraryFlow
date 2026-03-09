@@ -43,12 +43,12 @@ export function BookCatalog() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-semibold">Catálogo de Libros</h1>
+      <div className="flex items-center justify-between mb-5">
+        <h1 className="text-2xl font-bold text-slate-800">Catálogo de Libros</h1>
         {isAdmin && (
           <Link
             to="/admin/books/new"
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+            className="px-4 py-2 bg-amber-700 text-white rounded-md hover:bg-amber-800 text-sm font-medium transition-colors"
           >
             + Agregar Libro
           </Link>
@@ -68,11 +68,11 @@ export function BookCatalog() {
           placeholder="Buscar por título o autor..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white"
         />
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-4 py-2 bg-amber-700 text-white rounded-md hover:bg-amber-800 font-medium transition-colors"
         >
           Buscar
         </button>
@@ -80,7 +80,7 @@ export function BookCatalog() {
           <button
             type="button"
             onClick={handleClear}
-            className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
+            className="px-4 py-2 border border-stone-300 text-stone-700 rounded-md hover:bg-stone-100 transition-colors"
           >
             Limpiar
           </button>
@@ -90,11 +90,11 @@ export function BookCatalog() {
       {error && <ErrorAlert message={error} className="mb-4" />}
 
       {loading ? (
-        <p>
+        <p className="text-stone-500">
           <em>Cargando...</em>
         </p>
       ) : books.length === 0 ? (
-        <p className="text-gray-500">No se encontraron libros.</p>
+        <p className="text-stone-500">No se encontraron libros.</p>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {books.map((book) => (
@@ -104,21 +104,21 @@ export function BookCatalog() {
       )}
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-6">
+        <div className="flex items-center justify-center gap-2 mt-8">
           <button
             onClick={() => setPage((p) => p - 1)}
             disabled={page === 1}
-            className="px-3 py-1 border rounded hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-1.5 border border-stone-300 rounded-md text-stone-700 hover:bg-stone-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             Anterior
           </button>
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-stone-600 px-2">
             Página {page} de {totalPages}
           </span>
           <button
             onClick={() => setPage((p) => p + 1)}
             disabled={page === totalPages}
-            className="px-3 py-1 border rounded hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-1.5 border border-stone-300 rounded-md text-stone-700 hover:bg-stone-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             Siguiente
           </button>

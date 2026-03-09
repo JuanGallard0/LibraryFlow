@@ -41,10 +41,10 @@ export function CreateBookPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-6">Agregar Nuevo Libro</h1>
+      <h1 className="text-2xl font-bold text-slate-800 mb-6">Agregar Nuevo Libro</h1>
       <form onSubmit={handleSubmit} className="max-w-sm space-y-4">
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="title" className="block text-sm font-medium text-slate-700 mb-1">
             Título
           </label>
           <input
@@ -53,12 +53,12 @@ export function CreateBookPage() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white"
           />
         </div>
 
         <div>
-          <label htmlFor="isbn" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="isbn" className="block text-sm font-medium text-slate-700 mb-1">
             ISBN
           </label>
           <input
@@ -67,26 +67,26 @@ export function CreateBookPage() {
             value={isbn}
             onChange={(e) => setIsbn(e.target.value)}
             required
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white"
           />
         </div>
 
         <div>
-          <label htmlFor="genre" className="block text-sm font-medium text-gray-700 mb-1">
-            Género <span className="text-gray-400 font-normal">(opcional)</span>
+          <label htmlFor="genre" className="block text-sm font-medium text-slate-700 mb-1">
+            Género <span className="text-stone-400 font-normal">(opcional)</span>
           </label>
           <input
             type="text"
             id="genre"
             value={genre}
             onChange={(e) => setGenre(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white"
           />
         </div>
 
         <div>
-          <label htmlFor="publishedYear" className="block text-sm font-medium text-gray-700 mb-1">
-            Año de Publicación <span className="text-gray-400 font-normal">(opcional)</span>
+          <label htmlFor="publishedYear" className="block text-sm font-medium text-slate-700 mb-1">
+            Año de Publicación <span className="text-stone-400 font-normal">(opcional)</span>
           </label>
           <input
             type="number"
@@ -94,7 +94,7 @@ export function CreateBookPage() {
             min={1}
             value={publishedYear}
             onChange={(e) => setPublishedYear(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white"
           />
         </div>
 
@@ -113,14 +113,14 @@ export function CreateBookPage() {
           <button
             type="submit"
             disabled={!authorId || submitting}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-amber-700 text-white rounded-md hover:bg-amber-800 disabled:bg-stone-300 disabled:cursor-not-allowed font-medium transition-colors"
           >
             {submitting ? "Creando..." : "Crear Libro"}
           </button>
           <button
             type="button"
             onClick={() => navigate("/")}
-            className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
+            className="px-4 py-2 border border-stone-300 text-stone-700 rounded-md hover:bg-stone-100 transition-colors"
           >
             Cancelar
           </button>

@@ -54,7 +54,7 @@ export function DirectLoanForm() {
       <button
         type="submit"
         disabled={!bookId || !memberId || submitting}
-        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+        className="px-4 py-2 bg-amber-700 text-white rounded-md hover:bg-amber-800 disabled:bg-stone-300 disabled:cursor-not-allowed font-medium transition-colors"
       >
         {submitting ? "Creando préstamo..." : "Crear Préstamo"}
       </button>

@@ -6,7 +6,7 @@ export function ReservationsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-4">
+      <h1 className="text-2xl font-bold text-slate-800 mb-4">
         {isAdmin ? "Todas las Reservaciones" : "Mis Reservaciones"}
       </h1>
       <ReservationList />

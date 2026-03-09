@@ -36,11 +36,11 @@ export function AddBookCopyPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-1">Agregar Ejemplar</h1>
-      {book && <p className="text-gray-600 mb-6">{book.title}</p>}
+      <h1 className="text-2xl font-bold text-slate-800 mb-1">Agregar Ejemplar</h1>
+      {book && <p className="text-stone-500 mb-6">{book.title}</p>}
       <form onSubmit={handleSubmit} className="max-w-sm space-y-4">
         <div>
-          <label htmlFor="copyNumber" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="copyNumber" className="block text-sm font-medium text-slate-700 mb-1">
             Número de Ejemplar
           </label>
           <input
@@ -49,7 +49,7 @@ export function AddBookCopyPage() {
             value={copyNumber}
             onChange={(e) => setCopyNumber(e.target.value)}
             required
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white"
           />
         </div>
 
@@ -59,14 +59,14 @@ export function AddBookCopyPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-amber-700 text-white rounded-md hover:bg-amber-800 disabled:bg-stone-300 disabled:cursor-not-allowed font-medium transition-colors"
           >
             {submitting ? "Agregando..." : "Agregar Ejemplar"}
           </button>
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
+            className="px-4 py-2 border border-stone-300 text-stone-700 rounded-md hover:bg-stone-100 transition-colors"
           >
             Cancelar
           </button>

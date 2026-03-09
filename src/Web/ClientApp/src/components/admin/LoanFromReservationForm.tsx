@@ -62,9 +62,9 @@ export function LoanFromReservationForm() {
     }
   };
 
-  if (loading) return <p><em>Cargando reservaciones...</em></p>;
+  if (loading) return <p className="text-stone-500"><em>Cargando reservaciones...</em></p>;
   if (fetchError) return <ErrorAlert message={fetchError} />;
-  if (reservations.length === 0) return <p className="text-gray-500">No hay reservaciones pendientes.</p>;
+  if (reservations.length === 0) return <p className="text-stone-500">No hay reservaciones pendientes.</p>;
 
   const selectedMember = selected?.memberId !== undefined ? memberMap[selected.memberId] : undefined;
 
@@ -72,69 +72,71 @@ export function LoanFromReservationForm() {
     <div className="space-y-6">
       {!selected ? (
         <>
-          <p className="text-sm text-gray-600">Selecciona una reservación pendiente para completar:</p>
-          <table className="w-full border-collapse text-left text-sm">
-            <thead>
-              <tr className="border-b bg-gray-50">
-                <th className="px-4 py-2 font-semibold text-gray-700">Libro</th>
-                <th className="px-4 py-2 font-semibold text-gray-700">ISBN</th>
-                <th className="px-4 py-2 font-semibold text-gray-700">Miembro</th>
-                <th className="px-4 py-2 font-semibold text-gray-700">Reservado</th>
-                <th className="px-4 py-2 font-semibold text-gray-700">Vence</th>
-                <th className="px-4 py-2"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {reservations.map((r, i) => {
-                const member = r.memberId !== undefined ? memberMap[r.memberId] : undefined;
-                return (
-                  <tr key={r.id} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                    <td className="px-4 py-2">{r.bookTitle}</td>
-                    <td className="px-4 py-2">{r.bookISBN}</td>
-                    <td className="px-4 py-2">
-                      {member ? (
-                        <>
-                          <span className="font-medium">{member.firstName} {member.lastName}</span>
-                          <br />
-                          <span className="text-gray-500">{member.email}</span>
-                        </>
-                      ) : (
-                        <span className="text-gray-400">#{r.memberId}</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-2">{r.reservedAt ? new Date(r.reservedAt).toLocaleDateString(DATE_LOCALE) : "—"}</td>
-                    <td className="px-4 py-2">{r.expiresAt ? new Date(r.expiresAt).toLocaleDateString(DATE_LOCALE) : "—"}</td>
-                    <td className="px-4 py-2">
-                      <button
-                        onClick={() => setSelected(r)}
-                        className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
-                      >
-                        Seleccionar
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <p className="text-sm text-stone-600">Selecciona una reservación pendiente para completar:</p>
+          <div className="bg-white border border-stone-200 rounded-lg overflow-hidden">
+            <table className="w-full border-collapse text-left text-sm">
+              <thead>
+                <tr className="border-b border-stone-200 bg-stone-100">
+                  <th className="px-4 py-3 font-semibold text-slate-700">Libro</th>
+                  <th className="px-4 py-3 font-semibold text-slate-700">ISBN</th>
+                  <th className="px-4 py-3 font-semibold text-slate-700">Miembro</th>
+                  <th className="px-4 py-3 font-semibold text-slate-700">Reservado</th>
+                  <th className="px-4 py-3 font-semibold text-slate-700">Vence</th>
+                  <th className="px-4 py-3"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-stone-100">
+                {reservations.map((r) => {
+                  const member = r.memberId !== undefined ? memberMap[r.memberId] : undefined;
+                  return (
+                    <tr key={r.id} className="hover:bg-amber-50 transition-colors">
+                      <td className="px-4 py-3 text-slate-800 font-medium">{r.bookTitle}</td>
+                      <td className="px-4 py-3 text-stone-600">{r.bookISBN}</td>
+                      <td className="px-4 py-3">
+                        {member ? (
+                          <>
+                            <span className="font-medium text-slate-800">{member.firstName} {member.lastName}</span>
+                            <br />
+                            <span className="text-stone-500 text-xs">{member.email}</span>
+                          </>
+                        ) : (
+                          <span className="text-stone-400">#{r.memberId}</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-stone-600">{r.reservedAt ? new Date(r.reservedAt).toLocaleDateString(DATE_LOCALE) : "—"}</td>
+                      <td className="px-4 py-3 text-stone-600">{r.expiresAt ? new Date(r.expiresAt).toLocaleDateString(DATE_LOCALE) : "—"}</td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => setSelected(r)}
+                          className="px-3 py-1 bg-amber-700 text-white text-xs rounded-md hover:bg-amber-800 font-medium transition-colors"
+                        >
+                          Seleccionar
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </>
       ) : (
         <div className="max-w-sm space-y-4">
-          <div className="bg-gray-50 border rounded p-4 text-sm space-y-1">
-            <p><span className="font-medium">Libro:</span> {selected.bookTitle}</p>
-            <p><span className="font-medium">ISBN:</span> {selected.bookISBN}</p>
-            <p><span className="font-medium">ID Reservación:</span> {selected.id}</p>
+          <div className="bg-stone-50 border border-stone-200 rounded-lg p-4 text-sm space-y-1">
+            <p><span className="font-medium text-slate-700">Libro:</span> <span className="text-stone-700">{selected.bookTitle}</span></p>
+            <p><span className="font-medium text-slate-700">ISBN:</span> <span className="text-stone-700">{selected.bookISBN}</span></p>
+            <p><span className="font-medium text-slate-700">ID Reservación:</span> <span className="text-stone-700">{selected.id}</span></p>
           </div>
 
-          <div className="bg-gray-50 border rounded p-4 text-sm space-y-1">
-            <p className="font-medium text-gray-700 mb-1">Miembro</p>
+          <div className="bg-stone-50 border border-stone-200 rounded-lg p-4 text-sm space-y-1">
+            <p className="font-semibold text-slate-700 mb-1">Miembro</p>
             {selectedMember ? (
               <>
-                <p><span className="font-medium">Nombre:</span> {selectedMember.firstName} {selectedMember.lastName}</p>
-                <p><span className="font-medium">Correo:</span> {selectedMember.email}</p>
+                <p><span className="font-medium text-slate-700">Nombre:</span> <span className="text-stone-700">{selectedMember.firstName} {selectedMember.lastName}</span></p>
+                <p><span className="font-medium text-slate-700">Correo:</span> <span className="text-stone-700">{selectedMember.email}</span></p>
               </>
             ) : (
-              <p className="text-gray-400">Cargando información del miembro...</p>
+              <p className="text-stone-400">Cargando información del miembro...</p>
             )}
           </div>
 
@@ -144,14 +146,14 @@ export function LoanFromReservationForm() {
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-amber-700 text-white rounded-md hover:bg-amber-800 disabled:bg-stone-300 disabled:cursor-not-allowed font-medium transition-colors"
             >
               {submitting ? "Creando préstamo..." : "Crear Préstamo"}
             </button>
             <button
               type="button"
               onClick={() => { setSelected(null); setError(""); }}
-              className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
+              className="px-4 py-2 border border-stone-300 text-stone-700 rounded-md hover:bg-stone-100 transition-colors"
             >
               Volver
             </button>

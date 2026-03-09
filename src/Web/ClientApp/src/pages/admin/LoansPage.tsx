@@ -35,52 +35,54 @@ export function LoansPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-6">Préstamos</h1>
+      <h1 className="text-2xl font-bold text-slate-800 mb-6">Préstamos</h1>
 
       {error && <ErrorAlert message={error} className="mb-4" />}
 
       {loading ? (
-        <p><em>Cargando...</em></p>
+        <p className="text-stone-500"><em>Cargando...</em></p>
       ) : loans.length === 0 ? (
-        <p className="text-gray-500">No hay préstamos registrados.</p>
+        <p className="text-stone-500">No hay préstamos registrados.</p>
       ) : (
-        <table className="w-full border-collapse text-left text-sm">
-          <thead>
-            <tr className="border-b bg-gray-50">
-              <th className="px-4 py-2 font-semibold text-gray-700">Miembro</th>
-              <th className="px-4 py-2 font-semibold text-gray-700">Libro</th>
-              <th className="px-4 py-2 font-semibold text-gray-700">Ejemplar</th>
-              <th className="px-4 py-2 font-semibold text-gray-700">Prestado</th>
-              <th className="px-4 py-2 font-semibold text-gray-700">Vence</th>
-              <th className="px-4 py-2 font-semibold text-gray-700">Devuelto</th>
-              <th className="px-4 py-2 font-semibold text-gray-700">Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loans.map((loan, i) => {
-              const member = loan.memberId !== undefined ? memberMap[loan.memberId] : undefined;
-              return (
-                <tr key={loan.id} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                  <td className="px-4 py-2">
-                    <span className="font-medium">{loan.memberName}</span>
-                    {member?.email && (
-                      <>
-                        <br />
-                        <span className="text-gray-500">{member.email}</span>
-                      </>
-                    )}
-                  </td>
-                  <td className="px-4 py-2">{loan.bookTitle}</td>
-                  <td className="px-4 py-2">{loan.copyNumber}</td>
-                  <td className="px-4 py-2">{loan.borrowedAt ? new Date(loan.borrowedAt).toLocaleDateString(DATE_LOCALE) : "—"}</td>
-                  <td className="px-4 py-2">{loan.dueAt ? new Date(loan.dueAt).toLocaleDateString(DATE_LOCALE) : "—"}</td>
-                  <td className="px-4 py-2">{loan.returnedAt ? new Date(loan.returnedAt).toLocaleDateString(DATE_LOCALE) : "—"}</td>
-                  <td className="px-4 py-2">{loan.status !== undefined ? (LOAN_STATUS_LABELS[loan.status] ?? loan.status) : "—"}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className="bg-white border border-stone-200 rounded-lg overflow-hidden">
+          <table className="w-full border-collapse text-left text-sm">
+            <thead>
+              <tr className="border-b border-stone-200 bg-stone-100">
+                <th className="px-4 py-3 font-semibold text-slate-700">Miembro</th>
+                <th className="px-4 py-3 font-semibold text-slate-700">Libro</th>
+                <th className="px-4 py-3 font-semibold text-slate-700">Ejemplar</th>
+                <th className="px-4 py-3 font-semibold text-slate-700">Prestado</th>
+                <th className="px-4 py-3 font-semibold text-slate-700">Vence</th>
+                <th className="px-4 py-3 font-semibold text-slate-700">Devuelto</th>
+                <th className="px-4 py-3 font-semibold text-slate-700">Estado</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-stone-100">
+              {loans.map((loan) => {
+                const member = loan.memberId !== undefined ? memberMap[loan.memberId] : undefined;
+                return (
+                  <tr key={loan.id} className="hover:bg-amber-50 transition-colors">
+                    <td className="px-4 py-3">
+                      <span className="font-medium text-slate-800">{loan.memberName}</span>
+                      {member?.email && (
+                        <>
+                          <br />
+                          <span className="text-stone-500 text-xs">{member.email}</span>
+                        </>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-stone-700">{loan.bookTitle}</td>
+                    <td className="px-4 py-3 text-stone-600">{loan.copyNumber}</td>
+                    <td className="px-4 py-3 text-stone-600">{loan.borrowedAt ? new Date(loan.borrowedAt).toLocaleDateString(DATE_LOCALE) : "—"}</td>
+                    <td className="px-4 py-3 text-stone-600">{loan.dueAt ? new Date(loan.dueAt).toLocaleDateString(DATE_LOCALE) : "—"}</td>
+                    <td className="px-4 py-3 text-stone-600">{loan.returnedAt ? new Date(loan.returnedAt).toLocaleDateString(DATE_LOCALE) : "—"}</td>
+                    <td className="px-4 py-3 text-stone-600">{loan.status !== undefined ? (LOAN_STATUS_LABELS[loan.status] ?? loan.status) : "—"}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

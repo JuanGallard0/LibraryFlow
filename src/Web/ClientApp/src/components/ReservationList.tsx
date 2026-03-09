@@ -39,69 +39,71 @@ export function ReservationList() {
 
   if (loading)
     return (
-      <p>
+      <p className="text-stone-500">
         <em>Cargando...</em>
       </p>
     );
   if (error) return <ErrorAlert message={error} />;
   if (reservations.length === 0)
     return (
-      <p className="text-gray-500">
+      <p className="text-stone-500">
         {isAdmin ? "No hay reservaciones registradas." : "No tienes reservaciones."}
       </p>
     );
 
   return (
-    <table className="w-full border-collapse text-left text-sm">
-      <thead>
-        <tr className="border-b bg-gray-50">
-          <th className="px-4 py-2 font-semibold text-gray-700">Título</th>
-          <th className="px-4 py-2 font-semibold text-gray-700">ISBN</th>
-          {isAdmin && <th className="px-4 py-2 font-semibold text-gray-700">Miembro</th>}
-          <th className="px-4 py-2 font-semibold text-gray-700">Reservado</th>
-          <th className="px-4 py-2 font-semibold text-gray-700">Vence</th>
-          <th className="px-4 py-2 font-semibold text-gray-700">Estado</th>
-        </tr>
-      </thead>
-      <tbody>
-        {reservations.map((r, i) => {
-          const status = RESERVATION_STATUS_LABELS[r.status ?? -1] ?? {
-            label: "Desconocido",
-            className: "text-gray-500",
-          };
-          const member = r.memberId !== undefined ? memberMap[r.memberId] : undefined;
-          return (
-            <tr key={r.id} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-              <td className="px-4 py-2">{r.bookTitle}</td>
-              <td className="px-4 py-2">{r.bookISBN}</td>
-              {isAdmin && (
-                <td className="px-4 py-2">
-                  {member ? (
-                    <>
-                      <span className="font-medium">{member.firstName} {member.lastName}</span>
-                      <br />
-                      <span className="text-gray-500">{member.email}</span>
-                    </>
-                  ) : (
-                    <span className="text-gray-400">#{r.memberId}</span>
-                  )}
+    <div className="bg-white border border-stone-200 rounded-lg overflow-hidden">
+      <table className="w-full border-collapse text-left text-sm">
+        <thead>
+          <tr className="border-b border-stone-200 bg-stone-100">
+            <th className="px-4 py-3 font-semibold text-slate-700">Título</th>
+            <th className="px-4 py-3 font-semibold text-slate-700">ISBN</th>
+            {isAdmin && <th className="px-4 py-3 font-semibold text-slate-700">Miembro</th>}
+            <th className="px-4 py-3 font-semibold text-slate-700">Reservado</th>
+            <th className="px-4 py-3 font-semibold text-slate-700">Vence</th>
+            <th className="px-4 py-3 font-semibold text-slate-700">Estado</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-stone-100">
+          {reservations.map((r) => {
+            const status = RESERVATION_STATUS_LABELS[r.status ?? -1] ?? {
+              label: "Desconocido",
+              className: "text-stone-500",
+            };
+            const member = r.memberId !== undefined ? memberMap[r.memberId] : undefined;
+            return (
+              <tr key={r.id} className="hover:bg-amber-50 transition-colors">
+                <td className="px-4 py-3 text-slate-800 font-medium">{r.bookTitle}</td>
+                <td className="px-4 py-3 text-stone-600">{r.bookISBN}</td>
+                {isAdmin && (
+                  <td className="px-4 py-3">
+                    {member ? (
+                      <>
+                        <span className="font-medium text-slate-800">{member.firstName} {member.lastName}</span>
+                        <br />
+                        <span className="text-stone-500 text-xs">{member.email}</span>
+                      </>
+                    ) : (
+                      <span className="text-stone-400">#{r.memberId}</span>
+                    )}
+                  </td>
+                )}
+                <td className="px-4 py-3 text-stone-600">
+                  {r.reservedAt
+                    ? new Date(r.reservedAt).toLocaleDateString(DATE_LOCALE)
+                    : "—"}
                 </td>
-              )}
-              <td className="px-4 py-2">
-                {r.reservedAt
-                  ? new Date(r.reservedAt).toLocaleDateString(DATE_LOCALE)
-                  : "—"}
-              </td>
-              <td className="px-4 py-2">
-                {r.expiresAt ? new Date(r.expiresAt).toLocaleDateString(DATE_LOCALE) : "—"}
-              </td>
-              <td className={`px-4 py-2 font-medium ${status.className}`}>
-                {status.label}
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+                <td className="px-4 py-3 text-stone-600">
+                  {r.expiresAt ? new Date(r.expiresAt).toLocaleDateString(DATE_LOCALE) : "—"}
+                </td>
+                <td className={`px-4 py-3 font-medium ${status.className}`}>
+                  {status.label}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 }
