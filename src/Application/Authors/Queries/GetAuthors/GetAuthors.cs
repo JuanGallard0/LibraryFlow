@@ -1,7 +1,9 @@
 using LibraryFlow.Application.Common.Interfaces;
+using LibraryFlow.Application.Common.Security;
 
 namespace LibraryFlow.Application.Authors.Queries.GetAuthors;
 
+[Authorize]
 public record GetAuthorsQuery : IRequest<List<AuthorDto>>
 {
     public string? Search { get; init; }

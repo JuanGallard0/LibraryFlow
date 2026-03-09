@@ -1,8 +1,10 @@
 using LibraryFlow.Application.Common.Interfaces;
+using LibraryFlow.Application.Common.Security;
 using LibraryFlow.Domain.Entities;
 
 namespace LibraryFlow.Application.BookCopies.Queries.GetBookCopies;
 
+[Authorize]
 public record GetBookCopiesQuery(int BookId) : IRequest<List<BookCopyDto>>;
 
 public class GetBookCopiesQueryHandler(IApplicationDbContext context, IMapper mapper)

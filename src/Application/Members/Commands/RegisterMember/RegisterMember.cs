@@ -12,20 +12,12 @@ public record RegisterMemberCommand(
     string Email,
     string Password) : IRequest<int>;
 
-public class RegisterMemberCommandHandler : IRequestHandler<RegisterMemberCommand, int>
+public class RegisterMemberCommandHandler(IApplicationDbContext context, IIdentityService identityService)
+    : IRequestHandler<RegisterMemberCommand, int>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly IIdentityService _identityService;
-
-    public RegisterMemberCommandHandler(IApplicationDbContext context, IIdentityService identityService)
-    {
-        _context = context;
-        _identityService = identityService;
-    }
-
     public async Task<int> Handle(RegisterMemberCommand request, CancellationToken cancellationToken)
     {
-        var (result, userId) = await _identityService.CreateUserAsync(request.Email, request.Password);
+        var (result, userId) = await identityService.CreateUserAsync(request.Email, request.Password);
 
         if (!result.Succeeded)
             throw new ValidationException(result.Errors.Select(e => new ValidationFailure("", e)));
@@ -39,8 +31,8 @@ public class RegisterMemberCommandHandler : IRequestHandler<RegisterMemberComman
             MemberSince = DateOnly.FromDateTime(DateTime.UtcNow),
         };
 
-        _context.Members.Add(member);
-        await _context.SaveChangesAsync(cancellationToken);
+        context.Members.Add(member);
+        await context.SaveChangesAsync(cancellationToken);
 
         return member.Id;
     }

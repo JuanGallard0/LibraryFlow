@@ -38,7 +38,7 @@ public class Books : EndpointGroupBase
     {
         var id = await sender.Send(command);
 
-        return TypedResults.Created($"/{nameof(Books)}/{id}", id);
+        return TypedResults.Created($"/api/Books/{id}", id);
     }
 
     [EndpointName(nameof(GetBookCopies))]
