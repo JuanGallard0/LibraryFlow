@@ -1,6 +1,11 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "./api-authorization/AuthContext";
+
+const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+  isActive
+    ? "bg-slate-700 text-white rounded-md px-3 py-2 block transition-colors"
+    : "text-slate-200 hover:bg-slate-700 hover:text-white rounded-md px-3 py-2 block transition-colors";
 
 function NavBarInner() {
   const { isAuthenticated, isAdmin, logout } = useAuth();
@@ -17,64 +22,46 @@ function NavBarInner() {
       {isAuthenticated ? (
         <>
           <li>
-            <Link
-              className="text-slate-200 hover:text-white px-3 py-2 block transition-colors"
-              to="/"
-            >
+            <NavLink className={navLinkClass} to="/" end>
               Libros
-            </Link>
+            </NavLink>
           </li>
           {!isAdmin && (
             <>
               <li>
-                <Link
-                  className="text-slate-200 hover:text-white px-3 py-2 block transition-colors"
-                  to="/loans"
-                >
+                <NavLink className={navLinkClass} to="/loans">
                   Mis Préstamos
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link
-                  className="text-slate-200 hover:text-white px-3 py-2 block transition-colors"
-                  to="/reservations"
-                >
+                <NavLink className={navLinkClass} to="/reservations">
                   Mis Reservaciones
-                </Link>
+                </NavLink>
               </li>
             </>
           )}
           {isAdmin && (
             <>
               <li>
-                <Link
-                  className="text-slate-200 hover:text-white px-3 py-2 block transition-colors"
-                  to="/admin/loans"
-                >
+                <NavLink className={navLinkClass} to="/admin/loans" end>
                   Préstamos
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link
-                  className="text-slate-200 hover:text-white px-3 py-2 block transition-colors"
-                  to="/admin/loans/reservations"
-                >
+                <NavLink className={navLinkClass} to="/admin/loans/reservations">
                   Reservaciones
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link
-                  className="text-slate-200 hover:text-white px-3 py-2 block transition-colors"
-                  to="/admin/loans/direct"
-                >
+                <NavLink className={navLinkClass} to="/admin/loans/direct">
                   Préstamo Directo
-                </Link>
+                </NavLink>
               </li>
             </>
           )}
           <li>
             <button
-              className="text-slate-200 hover:text-white bg-transparent border-0 cursor-pointer px-3 py-2 transition-colors"
+              className="text-slate-200 hover:bg-slate-700 hover:text-white bg-transparent border-0 cursor-pointer rounded-md px-3 py-2 transition-colors"
               onClick={handleLogout}
             >
               Cerrar sesión
@@ -84,20 +71,14 @@ function NavBarInner() {
       ) : (
         <>
           <li>
-            <Link
-              className="text-slate-200 hover:text-white px-3 py-2 block transition-colors"
-              to="/login"
-            >
+            <NavLink className={navLinkClass} to="/login">
               Iniciar sesión
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link
-              className="text-slate-200 hover:text-white px-3 py-2 block transition-colors"
-              to="/register"
-            >
+            <NavLink className={navLinkClass} to="/register">
               Registrarse
-            </Link>
+            </NavLink>
           </li>
         </>
       )}

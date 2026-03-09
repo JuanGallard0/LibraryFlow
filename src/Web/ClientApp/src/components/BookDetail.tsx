@@ -88,13 +88,15 @@ export function BookDetail({ book }: BookDetailProps) {
       {error && <ErrorAlert message={error} className="mb-4" />}
 
       <div className="flex items-center gap-3">
-        <button
-          onClick={handleReserve}
-          disabled={!available || reserving}
-          className="px-5 py-2 rounded-md text-white bg-amber-700 hover:bg-amber-800 disabled:bg-stone-300 disabled:cursor-not-allowed font-medium transition-colors"
-        >
-          {reserving ? "Reservando..." : "Reservar"}
-        </button>
+        {!isAdmin && (
+          <button
+            onClick={handleReserve}
+            disabled={!available || reserving}
+            className="px-5 py-2 rounded-md text-white bg-amber-700 hover:bg-amber-800 disabled:bg-stone-300 disabled:cursor-not-allowed font-medium transition-colors"
+          >
+            {reserving ? "Reservando..." : "Reservar"}
+          </button>
+        )}
         {isAdmin && (
           <Link
             to={`/admin/books/${book.id}/copies/new`}
