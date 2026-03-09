@@ -44,7 +44,9 @@ jobs:
           global-json-file: 'global.json'
 
       - name: Run unit tests
-        run: dotnet test tests/Application.UnitTests/ tests/Domain.UnitTests/ --no-restore --logger "console;verbosity=normal"
+        run: |
+          dotnet test tests/Application.UnitTests/ --no-restore --logger "console;verbosity=normal"
+          dotnet test tests/Domain.UnitTests/ --no-restore --logger "console;verbosity=normal"
 
       - name: Run integration tests
         run: dotnet test tests/Infrastructure.IntegrationTests/ --no-restore --logger "console;verbosity=normal"
